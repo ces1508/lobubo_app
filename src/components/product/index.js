@@ -5,7 +5,7 @@ import Price from '../price'
 import FavoriteIcon from '../favorite'
 
 const Product = props => (
-  <TouchableWithoutFeedback style={{ position: 'relative' }}>
+  <TouchableWithoutFeedback style={{ position: 'relative', elevation: 6 }}>
     <View style={styles.container}>
       <Image
         resizeMode='stretch'
@@ -18,7 +18,9 @@ const Product = props => (
           currency='COP' />
         <Text>{props.attributes.lastPrice}</Text>
         <Text>{props.attributes.name}</Text>
-        <Text>{props.attributes.location}</Text>
+        <Text>
+          {`${props.attributes.locations[0].city}, ${props.attributes.locations[0].region}`}
+        </Text>
         <FavoriteIcon isFavorite style={styles.icon} />
       </View>
     </View>
@@ -32,13 +34,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Theme.colors.gray,
     borderRadius: 3,
-    overflow: 'hidden',
     paddingBottom: 10,
     flex: 1,
-    margin: 10
+    margin: 10,
+    overflow: 'hidden'
   },
   image: {
     height: 180,
+    overflow: 'hidden',
     width: '100%'
   },
   price: {

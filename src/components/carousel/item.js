@@ -13,7 +13,6 @@ import Price from '../price'
 
 const CarouselItem = props => {
   let { price, name, distance, brand, image } = props
-  console.log(props)
   return (
     <TouchableOpacity style={styles.container}>
       <ImageBackground resizeMode='stretch' source={{ uri: image.original.url }} style={styles.image}>
