@@ -5,10 +5,10 @@ import Button from '../components/button'
 import { connect } from 'react-redux'
 import Api from '../api'
 import { setUserProfile, setUserToken } from '../ducks/user'
-import { loadProducts } from '../ducks/products'
+import { getProducts } from '../ducks/products'
 
 const mapStateToProps = state => ({ user: state.user })
-const mapDispatchToProps = { setUserProfile, setUserToken, loadProducts }
+const mapDispatchToProps = { setUserProfile, setUserToken, getProducts }
 
 class LoginScreen extends Component {
   constructor (props) {
@@ -29,7 +29,7 @@ class LoginScreen extends Component {
       if (!data.error) {
         this.props.setUserProfile({ ...data.data.data.attributes, ...data.data.data.subscriber_data })
         this.props.setUserToken(data.data.meta.authentication_token)
-        this.props.loadProducts({ page: 1 })
+        this.props.getProducts({ page: 1 })
         return this.props.navigation.navigate('home')
       }
       return Alert.alert(

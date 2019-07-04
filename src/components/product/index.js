@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Image, Text, StyleSheet, TouchableWithoutFeedback } from 'react-native'
+import { View, Image, Text, StyleSheet, TouchableWithoutFeedback, Alert } from 'react-native'
 import Theme from '../../Theme'
 import Price from '../price'
 import FavoriteIcon from '../favorite'
@@ -7,7 +7,7 @@ import { makeFavorite } from '../../ducks/products'
 import { connect } from 'react-redux'
 
 const mapDispatchToProps = { makeFavorite }
-const mapStateToProps = state => ({ favorites: state.products.favorites })
+const mapStateToProps = state => ({ favorites: state.products.favorites, token: state.user.token })
 
 const Product = props => (
   <TouchableWithoutFeedback style={{ position: 'relative', elevation: 6 }}>
@@ -27,7 +27,7 @@ const Product = props => (
           {`${props.attributes.locations[0].city}, ${props.attributes.locations[0].region}`}
         </Text>
         <FavoriteIcon
-          onPress={() => props.makeFavorite(props.id, props.favorites.get(props.id))}
+          onPress={() => props.token ? props.makeFavorite(props.id, props.favorites.get(props.id)): Alert.alert('ups !', 'primero debes inicar sesion')}
           isFavorite={props.favorites.get(props.id)}
           style={styles.icon} />
       </View>
