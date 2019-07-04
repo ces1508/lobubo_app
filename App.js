@@ -7,7 +7,7 @@
  */
 
 import React, { Component } from 'react'
-import HomeScreen from './src/screens/home'
+import Navigation from './src/navigation'
 import { Provider } from 'react-redux'
 import store from './src/store'
 import { setPosition } from './src/ducks/position'
@@ -33,7 +33,7 @@ export default class App extends Component {
     if (this.state.hasPosition) {
       return (
         <Provider store={store}>
-          <HomeScreen />
+          <Navigation />
         </Provider>
       )
     }

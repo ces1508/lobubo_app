@@ -3,6 +3,11 @@ import { View, Image, Text, StyleSheet, TouchableWithoutFeedback } from 'react-n
 import Theme from '../../Theme'
 import Price from '../price'
 import FavoriteIcon from '../favorite'
+import { makeFavorite } from '../../ducks/products'
+import { connect } from 'react-redux'
+
+const mapDispatchToProps = { makeFavorite }
+const mapStateToProps = state => ({ favorites: state.products.favorites })
 
 const Product = props => (
   <TouchableWithoutFeedback style={{ position: 'relative', elevation: 6 }}>
@@ -21,13 +26,16 @@ const Product = props => (
         <Text>
           {`${props.attributes.locations[0].city}, ${props.attributes.locations[0].region}`}
         </Text>
-        <FavoriteIcon isFavorite style={styles.icon} />
+        <FavoriteIcon
+          onPress={() => props.makeFavorite(props.id, props.favorites.get(props.id))}
+          isFavorite={props.favorites.get(props.id)}
+          style={styles.icon} />
       </View>
     </View>
   </TouchableWithoutFeedback>
 )
 
-export default Product
+export default connect(mapStateToProps, mapDispatchToProps)(Product)
 
 const styles = StyleSheet.create({
   container: {
@@ -50,8 +58,6 @@ const styles = StyleSheet.create({
   icon: {
     position: 'absolute',
     top: -15,
-    right: 5,
-    borderWidth: 1,
-    borderColor: 'gray'
+    right: 5
   }
 })

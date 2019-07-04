@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { TouchableOpacity, Text, StyleSheet } from 'react-native'
-import Theme from '../Theme'
+import Theme from '../../Theme'
 
 const Button = props => (
   <TouchableOpacity
@@ -36,6 +36,8 @@ Button.defaultProps = {
 
 const styles = StyleSheet.create({
   container: {
+    width: 150,
+    height: 50,
     borderRadius: 5,
     padding: 15,
     backgroundColor: Theme.colors.primary,

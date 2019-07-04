@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import Swiper, { Pagination } from 'react-native-snap-carousel'
 import PropTypes from 'prop-types'
 import {
@@ -16,7 +16,7 @@ const mapDispatchToProps = {
   loadCarouselProducts
 }
 
-class Carousel extends Component {
+class Carousel extends PureComponent {
   constructor (props) {
     super(props)
     this.state = {
@@ -24,10 +24,11 @@ class Carousel extends Component {
     }
   }
   componentWillMount () {
-    // let { latitude, longitude } = this.props.position
-    let latitude = 4.57087
-    let longitude = -74.2973
-    this.props.loadCarouselProducts(latitude, longitude)
+    if (this.props.data.length <= 0) {
+      let latitude = 4.57087
+      let longitude = -74.2973
+      this.props.loadCarouselProducts(latitude, longitude)
+    }
   }
   render () {
     return (

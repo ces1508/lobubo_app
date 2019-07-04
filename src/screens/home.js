@@ -7,9 +7,12 @@ import Icons from 'react-native-vector-icons/MaterialCommunityIcons'
 import Theme from '../Theme'
 import Product from '../components/product'
 import listHOC from '../components/list'
-import Api from '../api'
+import { connect } from 'react-redux'
+import { getProducts, getServices } from '../ducks/products'
 
-export default class HomeScreen extends Component {
+const mapStateToProps = state => ({ data: state.products.data })
+const mapDispatchToProps = { getProducts, getServices }
+class HomeScreen extends Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -18,6 +21,25 @@ export default class HomeScreen extends Component {
     }
     this.renderListHeader = this.renderListHeader.bind(this)
     this.renderContent = this.renderContent.bind(this)
+    this.loadData = this.loadData.bind(this)
+    this._handleTabChange = this._handleTabChange.bind(this)
+  }
+  shouldComponentUpdate (nextProps, nextState) {
+    return nextProps.data !== this.props.data
+  }
+  loadData () {
+    let { getProducts, getServices } = this.props
+    let { currentTab } = this.state
+    if (currentTab === 'productos') {
+      return getProducts({ page: 1 })
+    }
+    getServices({ page: 1 })
+  }
+  _handleTabChange (value) {
+    this.setState({ currentTab: value }, () => this.loadData())
+  }
+  componentDidMount () {
+    this.loadData()
   }
   renderListHeader () {
     return (
@@ -31,19 +53,21 @@ export default class HomeScreen extends Component {
             <Icons name='map-marker' size={20} color='#fff' style={{ marginRight: 10 }} />
           </Button>
         </View>
-        <Tabs tabs={this.state.tabs} onChange={value => this.setState({ currentTab: value })} value={this.state.currentTab} />
+        <Tabs tabs={this.state.tabs} onChange={this._handleTabChange} value={this.state.currentTab} />
       </View>
     )
   }
   renderContent () {
-    let ProductList = listHOC(() => this.state.currentTab === 'productos' ? Api.getProducts({ page: 1 }) : Api.getServices({ page: 1 }))
+    let ProductList = listHOC(this.loadData)
     return (
       <ProductList
-        ListHeaderComponent={this.renderListHeader}
+        extraData={this.state}
+        ListHeaderComponent={() => this.renderListHeader()}
+        style={{ flex: 1 }}
+        data={this.props.data}
         numColumns={2}
         ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
         columnWrappedStyle={{ marginHorizontal: 10 }}
-        style={{ marginTop: 20 }}
         renderItem={({ item }) => <Product {...item} />}
       />
     )
@@ -66,3 +90,5 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between'
   }
 })
+
+export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen)

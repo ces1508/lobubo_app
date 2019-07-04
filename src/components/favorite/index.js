@@ -8,7 +8,7 @@ import {
 } from 'react-native'
 
 const FavoriteIcon = props => (
-  <TouchableWithoutFeedback>
+  <TouchableWithoutFeedback onPress={props.onPress}>
     <View
       style={[
         styles.container,
@@ -32,7 +32,6 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   isFavorite: {
-    backgroundColor: Theme.colors.primary,
-    borderColor: Theme.colors.primary
+    backgroundColor: Theme.colors.primary
   }
 })

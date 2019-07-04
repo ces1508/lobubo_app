@@ -1,8 +1,12 @@
 import Api from '../api'
 const GET_CAROUSEL_PRODUCTS = 'GET_CAROUSEL_PRODUCTS'
+const GET_PRODUCTS = 'GET_PRODUCTS'
+const MAKE_PRODUCT_FAVORITE = 'MAKE_PRODUCT_FAVORITE'
 
 const initialState = {
-  carousel: []
+  carousel: [],
+  data: [],
+  favorites: new Map()
 }
 
 export default function productsReducer (state = initialState, action) {
@@ -11,6 +15,19 @@ export default function productsReducer (state = initialState, action) {
       return {
         ...state,
         carousel: [...action.data]
+      }
+    case GET_PRODUCTS:
+      return {
+        ...state,
+        data: action.products,
+        favorites: action.favorites
+      }
+    case MAKE_PRODUCT_FAVORITE:
+      let favorites = new Map(state.favorites)
+      favorites.set(action.id, !favorites.get(action.id))
+      return {
+        ...state,
+        favorites
       }
     default:
       return state
@@ -36,7 +53,50 @@ export const loadCarouselProducts = (latitude, longitude, radius = 1000) => {
       })
       return dispatch({ type: GET_CAROUSEL_PRODUCTS, data })
     }
-    console.log(products)
     return dispatch({ type: GET_CAROUSEL_PRODUCTS, data: [] })
   }
+}
+
+const loadProducts = (resource, params) => {
+  return async dispatch => {
+    let products = null
+    if (resource === 'products') {
+      products = await Api.getProducts(params)
+    } else {
+      products = await Api.getServices(params)
+    }
+    if (!products.error) {
+      let favorites = new Map()
+      products.data.data.forEach(item => { favorites.set(item.id, item.attributes['is-favorite']) })
+      return dispatch({ type: GET_PRODUCTS, products: products.data.data, favorites })
+    }
+    return dispatch({ type: GET_PRODUCTS, products: [], favorites: new Map() })
+  }
+}
+
+export function getProducts (params) {
+  return loadProducts('products', params)
+}
+
+export function getServices (params) {
+  return loadProducts('services', params)
+}
+
+export const makeFavorite = (id, isFavorite) => {
+  return async dispatch => {
+    let handler = null
+    dispatch(handleFavorite(id))
+    if (isFavorite) {
+      handler = await Api.removeFavorite('products', id)
+    } else {
+      handler = await Api.makeFavorite('products', id)
+    }
+    if (handler.error) {
+      return dispatch(handleFavorite(id))
+    }
+  }
+}
+
+function handleFavorite (id) {
+  return { type: MAKE_PRODUCT_FAVORITE, id }
 }

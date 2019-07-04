@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import {
   ActivityIndicator,
   View,
@@ -6,29 +6,20 @@ import {
 } from 'react-native'
 import Theme from '../../Theme'
 
-export default function List (getData, refreshData, newData) {
-  return class List extends Component {
+export default function List (refreshData, newData) {
+  return class List extends PureComponent {
     constructor (props) {
       super(props)
       this.state = {
         isLoading: true,
         loadingMore: false,
         refreshing: false,
-        data: [],
         error: false
       }
       this._renderFooter = this._renderFooter.bind(this)
       this._handlePaginate = this._handlePaginate.bind(this)
       this._handleRefresh = this._handleRefresh.bind(this)
     }
-    async componentDidMount () {
-      let data = await getData()
-      if (!data.error) {
-        return this.setState({ data, isLoading: false })
-      }
-      this.setState({ error: true, isLoading: false })
-    }
-
     _renderFooter () {
       let { loadingMore } = this.state
       if (loadingMore) {
@@ -47,7 +38,7 @@ export default function List (getData, refreshData, newData) {
     }
     async _handleRefresh () {
       this.setState({ refreshData: true })
-      let data = await getData()
+      let data = await refreshData()
       if (!data.error) {
         return this.setState({ data, refreshData: false })
       }
@@ -64,7 +55,6 @@ export default function List (getData, refreshData, newData) {
       return (
         <FlatList
           keyExtractor={item => item.id}
-          data={this.state.data}
           onEndReached={this._handlePaginate}
           onRefresh={this._handleRefresh}
           refreshing={this.state.refreshing}
