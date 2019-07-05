@@ -23,10 +23,12 @@ export default function shoppingCarReducer (state = initialState, action) {
 function setLoader (flag = true) {
   return { type: SET_SHOPPING_CART_LOADER, loader: flag }
 }
-export const getShoppingCar = async dispatch => {
-  dispatch(setLoader())
-  let products = await Api.getProductsCar()
-  if (!products.error) {
-    dispatch({ type: GET_PRODUCTS_OF_CART, products: products.data.data })
+export const getShoppingCar = () => {
+  return async dispatch => {
+    dispatch(setLoader())
+    let products = await Api.getProductsCar()
+    if (!products.error) {
+      dispatch({ type: GET_PRODUCTS_OF_CART, products: products.data.data })
+    }
   }
 }

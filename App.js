@@ -11,8 +11,9 @@ import Navigation from './src/navigation'
 import { Provider } from 'react-redux'
 import store from './src/store'
 import { setPosition } from './src/ducks/position'
-import { getCurrentPosition } from './src/utils/libs'
+import { getCurrentPosition, getItem } from './src/utils/libs'
 import { getShoppingCar } from './src/ducks/shoppingCart'
+import { setUserToken } from './src/ducks/user'
 
 export default class App extends Component {
   constructor (props) {
@@ -22,6 +23,7 @@ export default class App extends Component {
     }
   }
   async componentDidMount () {
+    this.validateExitsToken()
     try {
       let position = await getCurrentPosition()
       store.dispatch(setPosition(position))
@@ -30,6 +32,12 @@ export default class App extends Component {
       console.warn('error getting position ', e.message)
     }
     this.setState({ hasPosition: true })
+  }
+  async validateExitsToken () {
+    let token = await getItem('token')
+    if (token) {
+      store.dispatch(setUserToken(token))
+    }
   }
   render () {
     if (this.state.hasPosition) {

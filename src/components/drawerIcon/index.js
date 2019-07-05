@@ -8,7 +8,7 @@ import IconMenu from '../../images/icons/ico_menu.png'
 const DrawerIcon = props => (
   <TouchableNativeFeedback
     style={{ backgroundColor: 'red', padding: 10, flex: 1 }}
-    onPress={() => props.navigation.state.isDrawerOpen ? props.navigation.closeDrawer() : props.navigation.openDrawer()}>
+    onPress={() => props.navigation.openDrawer()}>
     <Image
       source={IconMenu}
       style={styles.drawer} />

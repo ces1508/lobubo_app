@@ -2,6 +2,7 @@ import Api from '../api'
 const GET_CAROUSEL_PRODUCTS = 'GET_CAROUSEL_PRODUCTS'
 const GET_PRODUCTS = 'GET_PRODUCTS'
 const MAKE_PRODUCT_FAVORITE = 'MAKE_PRODUCT_FAVORITE'
+const RESET_PRODUCTS_LIST = 'RESET_PRODUCTS_LIST'
 
 const initialState = {
   carousel: [],
@@ -28,6 +29,12 @@ export default function productsReducer (state = initialState, action) {
       return {
         ...state,
         favorites
+      }
+    case RESET_PRODUCTS_LIST:
+      return {
+        ...state,
+        data: [],
+        favorites: new Map()
       }
     default:
       return state
@@ -60,6 +67,7 @@ export const loadCarouselProducts = (latitude, longitude, radius = 1000) => {
 const loadProducts = (resource, params) => {
   return async dispatch => {
     let products = null
+    dispatch(reset())
     if (resource === 'products') {
       products = await Api.getProducts(params)
     } else {
@@ -80,6 +88,10 @@ export function getProducts (params) {
 
 export function getServices (params) {
   return loadProducts('services', params)
+}
+
+export function reset () {
+  return { type: RESET_PRODUCTS_LIST }
 }
 
 export const makeFavorite = (id, isFavorite) => {
