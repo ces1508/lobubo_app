@@ -12,6 +12,7 @@ import { Provider } from 'react-redux'
 import store from './src/store'
 import { setPosition } from './src/ducks/position'
 import { getCurrentPosition } from './src/utils/libs'
+import { getShoppingCar } from './src/ducks/shoppingCart'
 
 export default class App extends Component {
   constructor (props) {
@@ -24,6 +25,7 @@ export default class App extends Component {
     try {
       let position = await getCurrentPosition()
       store.dispatch(setPosition(position))
+      store.dispatch(getShoppingCar())
     } catch (e) {
       console.warn('error getting position ', e.message)
     }

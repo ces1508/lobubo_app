@@ -43,7 +43,7 @@ class Api {
       return { data: request.data }
     } catch (e) {
       console.log(e.response)
-      return { error: e.message, data: e.response.data }
+      return { error: true, data: e.response.data }
     }
   }
   getProducts (params) {
@@ -70,6 +70,25 @@ class Api {
   }
   removeFavorite (path, id) {
     return this.makeRequest(`https://lobubo.com/api/app/${path}/${id}/remove_from_favorites`, 'POST')
+  }
+  addProductToCart (data) {
+    let bData = this.buildData(data)
+    return this.makeRequest('https://lobubo.com/api/app/orders/add_to_cart', 'POST', bData)
+  }
+  removeProductFromCar (id, params = {}) {
+    return this.makeRequest(`https://lobubo.com/api/app/orders/remove_from_cart/${id}`, 'DELETE', null, params)
+  }
+  getProductsCar () {
+    return this.makeRequest('https://lobubo.com/api/app/cart')
+  }
+  buildData (data) {
+    return {
+      data: {
+        attributes: {
+          ...data
+        }
+      }
+    }
   }
 }
 

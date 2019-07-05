@@ -2,6 +2,7 @@ import React from 'react'
 import { createStackNavigator, createAppContainer, createDrawerNavigator } from 'react-navigation'
 import HomeScreen from '../screens/home'
 import LoginScreen from '../screens/login'
+import QrReaderScreen from '../screens/qrReader'
 import DrawerIcon from '../components/drawerIcon'
 
 const Stack = createStackNavigator({
@@ -11,7 +12,8 @@ const Stack = createStackNavigator({
       title: 'Home',
       headerLeft: <DrawerIcon navigation={navigation} />
     })
-  }
+  },
+  qrReader: QrReaderScreen
 },
 {
   initialRouteName: 'home'
@@ -21,6 +23,12 @@ const Drawer = createDrawerNavigator({
     screen: Stack,
     navigationOptions: {
       drawerLabel: 'home'
+    }
+  },
+  qrReader: {
+    screen: QrReaderScreen,
+    navigationOptions: {
+      drawerLabel: 'Scannear'
     }
   },
   login: {
