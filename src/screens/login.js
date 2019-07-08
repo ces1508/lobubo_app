@@ -1,15 +1,16 @@
 import React, { Component } from 'react'
-import { View, Text, Alert, AsyncStorage } from 'react-native'
+import { View, Text, Alert } from 'react-native'
 import Input from '../components/input'
 import Button from '../components/button'
 import { connect } from 'react-redux'
 import Api from '../api'
 import { setUserProfile, setUserToken } from '../ducks/user'
 import { getProducts } from '../ducks/products'
+import { getShoppingCar } from '../ducks/shoppingCart'
 import Theme from '../Theme'
 
 const mapStateToProps = state => ({ user: state.user })
-const mapDispatchToProps = { setUserProfile, setUserToken, getProducts }
+const mapDispatchToProps = { setUserProfile, setUserToken, getProducts, getShoppingCar }
 
 class LoginScreen extends Component {
   constructor (props) {
@@ -24,13 +25,13 @@ class LoginScreen extends Component {
 
   async signIn () {
     let { email, password } = this.state
-    await AsyncStorage.removeItem('@token')
     if (email && password) {
       let data = await Api.signIn({ email, password })
       if (!data.error) {
         this.props.setUserProfile({ ...data.data.data.attributes, ...data.data.data.subscriber_data })
         this.props.setUserToken(data.data.meta.authentication_token)
         this.props.getProducts({ page: 1 })
+        this.props.getShoppingCar()
         return this.props.navigation.goBack()
       }
       return Alert.alert(

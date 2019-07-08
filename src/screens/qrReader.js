@@ -3,12 +3,21 @@ import { StyleSheet, Alert } from 'react-native'
 import QR from 'react-native-qrcode-scanner'
 import Api from '../api'
 import { connect } from 'react-redux'
+import { getShoppingCar } from '../ducks/shoppingCart'
+const mapStateToProps = state => ({ token: state.user.token })
+const mapDispatchToProps = { getShoppingCar }
 
 class QrReaderScreen extends PureComponent {
   constructor (props) {
     super(props)
     this.renderAlert = this.renderAlert.bind(this)
     this._handleReader = this._handleReader.bind(this)
+  }
+
+  componentWillMount () {
+    if (!this.props.token) {
+      this.props.navigation.navigate('login')
+    }
   }
 
   async _handleReader (qr) {
@@ -23,7 +32,9 @@ class QrReaderScreen extends PureComponent {
     }
     let addProduct = await Api.addProductToCart(product)
     if (!addProduct.error) {
-      return this.renderAlert('Felicidades', 'el producto se ha agregado   satisfatoriamente')
+      this.props.getShoppingCar()
+      this.renderAlert('Felicidades', 'el producto se ha agregado   satisfatoriamente')
+      return this.props.navigation.navigate('home')
     }
     this.renderAlert('Ups', 'estamos presentando problemas, por favor intenta mas tarde')
   }
@@ -40,7 +51,7 @@ class QrReaderScreen extends PureComponent {
   }
 }
 
-export default connect()(QrReaderScreen)
+export default connect(mapStateToProps, mapDispatchToProps)(QrReaderScreen)
 
 const styles = StyleSheet.create({
   camera: {
