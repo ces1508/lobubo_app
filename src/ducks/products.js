@@ -1,4 +1,5 @@
 import Api from '../api'
+import { setManyFavorites } from './favorites'
 const GET_CAROUSEL_PRODUCTS = 'GET_CAROUSEL_PRODUCTS'
 const GET_PRODUCTS = 'GET_PRODUCTS'
 const MAKE_PRODUCT_FAVORITE = 'MAKE_PRODUCT_FAVORITE'
@@ -6,8 +7,7 @@ const RESET_PRODUCTS_LIST = 'RESET_PRODUCTS_LIST'
 
 const initialState = {
   carousel: [],
-  data: [],
-  favorites: new Map()
+  data: []
 }
 
 export default function productsReducer (state = initialState, action) {
@@ -74,8 +74,11 @@ const loadProducts = (resource, params) => {
       products = await Api.getServices(params)
     }
     if (!products.error) {
-      let favorites = new Map()
-      products.data.data.forEach(item => { favorites.set(item.id, item.attributes['is-favorite']) })
+      let favorites = []
+      products.data.data.forEach(item => {
+        if (item.attributes['is-favorite']) favorites.push(item)
+      })
+      dispatch(setManyFavorites(favorites))
       return dispatch({ type: GET_PRODUCTS, products: products.data.data, favorites })
     }
     return dispatch({ type: GET_PRODUCTS, products: [], favorites: new Map() })
@@ -92,23 +95,4 @@ export function getServices (params) {
 
 export function reset () {
   return { type: RESET_PRODUCTS_LIST }
-}
-
-export const makeFavorite = (id, isFavorite) => {
-  return async dispatch => {
-    let handler = null
-    dispatch(handleFavorite(id))
-    if (isFavorite) {
-      handler = await Api.removeFavorite('products', id)
-    } else {
-      handler = await Api.makeFavorite('products', id)
-    }
-    if (handler.error) {
-      return dispatch(handleFavorite(id))
-    }
-  }
-}
-
-function handleFavorite (id) {
-  return { type: MAKE_PRODUCT_FAVORITE, id }
 }
