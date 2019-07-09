@@ -38,9 +38,7 @@ const CarouselItem = props => {
 
 const styles = StyleSheet.create({
   container: {
-    overflow: 'hidden',
-    borderRadius: 5,
-    width: '99%'
+    overflow: 'hidden'
   },
   containerDistance: {
     flexDirection: 'row',
@@ -54,7 +52,6 @@ const styles = StyleSheet.create({
     paddingLeft: 15,
     paddingVertical: 15,
     height: 200,
-    borderRadius: 5,
     width: '100%'
   },
   textColor: {

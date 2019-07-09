@@ -13,6 +13,7 @@ import DrawerIcon from '../components/drawerIcon'
 import ShoppingCartIcon from '../components/shoppingCartIcon'
 import ProductsFavorites from '../screens/favorites/products'
 import BrandFavorites from '../screens/favorites/brands'
+import SideMenu from '../components/sideMenu'
 
 const FavoriteStack = createBottomTabNavigator({
   products: ProductsFavorites,
@@ -31,16 +32,24 @@ const Stack = createStackNavigator({
   shoppingCart: {
     screen: ShoppingCartScreen,
     navigationOptions: {
-      drawerLabel: 'Carrito de Compras'
+      title: 'Carrito de Compras'
     }
   },
   qrReader: {
     screen: QrReaderScreen,
     navigationOptions: {
-      drawerLabel: 'Scannear'
+      title: 'Scannear'
     }
+  },
+  favorites: {
+    screen: FavoriteStack,
+    navigationOptions: {
+      title: 'Mis Favoritos'
+    }
+  },
+  login: {
+    screen: LoginScreen
   }
-  // favorites: FavoriteStack
 },
 {
   initialRouteName: 'home'
@@ -51,35 +60,11 @@ const Drawer = createDrawerNavigator({
     navigationOptions: {
       drawerLabel: 'home'
     }
-  },
-  qrReader: {
-    screen: QrReaderScreen,
-    navigationOptions: {
-      drawerLabel: 'Scannear'
-    }
-  },
-  login: {
-    screen: LoginScreen,
-    navigationOptions: {
-      drawerLabel: 'Entrar'
-    }
-  },
-  shoppingCart: {
-    screen: ShoppingCartScreen,
-    navigationOptions: ({ navigation }) => ({
-      drawerLabel: 'Carrito de Compras'
-      // drawerIcon: <ShoppingCartIcon navigation={navigation} />
-    })
-  },
-  favorites: {
-    screen: FavoriteStack,
-    navigationOptions: {
-      title: 'Tus Favoritos'
-    }
   }
 }, {
   drawerPosition: 'left',
-  drawerType: 'slide'
+  drawerType: 'slide',
+  contentComponent: SideMenu
 })
 
 export default createAppContainer(Drawer)

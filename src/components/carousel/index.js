@@ -25,8 +25,7 @@ class Carousel extends PureComponent {
   }
   componentWillMount () {
     if (this.props.data.length <= 0) {
-      let latitude = 4.57087
-      let longitude = -74.2973
+      let { latitude, longitude } = this.props.position
       this.props.loadCarouselProducts(latitude, longitude)
     }
   }
@@ -40,11 +39,11 @@ class Carousel extends PureComponent {
           sliderHeight={200}
           sliderWidth={width}
           itemWidth={width}
-          containerCustomStyle={{ flexGrow: 1 }}
           data={this.props.data}
           renderItem={({ item }) => <Item {...item} />}
           onBeforeSnapToItem={index => this.setState({ activeSlide: index })}
           loop
+
           autoplay />
         <Pagination
           dotsLength={this.props.data.length}

@@ -4,6 +4,7 @@ const GET_BRANDS_FAVORITES = '/favorites/get/brands'
 const SET_MANY_FAVORITES = '/favorites/set/many'
 const SET_SINGLE_FAVORITE = '/favorites/set/single'
 const REMOVE_SINGLE_FAVORITE = '/favorites/remove/single'
+const RESET_FAVORITES  = '/favorites/reset'
 
 const initialState = {
   products: new Map(),
@@ -40,13 +41,18 @@ export default function favoritesReducer (state = initialState, action) {
       let brands = state.brands
       let products = state.products
       brands.delete(action.key)
-      console.log(products.delete(action.key))
       products.delete(action.key)
-      console.log(products.size)
       return {
         ...state,
         brands: new Map(brands),
         products: new Map(products)
+      }
+    case RESET_FAVORITES:
+      return {
+        ...state,
+        currentFavorites: new Map(),
+        brands: new Map(),
+        products: new Map()
       }
     default:
       return state
@@ -97,3 +103,4 @@ export const makeFavorite = (item, isFavorite) => {
 const removeFromProductsAndBrands = key => ({ type: REMOVE_SINGLE_FAVORITE, key })
 export const setManyFavorites = favorites => ({ type: SET_MANY_FAVORITES, favorites })
 export const setSingleFavorite = favorite => ({ type: SET_SINGLE_FAVORITE, favorite })
+export const reset = () => ({ type: RESET_FAVORITES })

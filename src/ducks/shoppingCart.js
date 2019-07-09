@@ -1,6 +1,7 @@
 import Api from '../api'
 const GET_PRODUCTS_OF_CART = 'GET_PRODUCTS_OF_CART'
 const SET_SHOPPING_CART_LOADER = 'SET_SHOPPING_CART_LOADER'
+const RESET_SHOPPING_CART = '/shopping-cart/reset'
 
 const initialState = {
   products: [],
@@ -15,6 +16,12 @@ export default function shoppingCarReducer (state = initialState, action) {
         isLoading: false,
         products: action.products
       }
+    case RESET_SHOPPING_CART: {
+      return {
+        ...state,
+        products: []
+      }
+    }
     default:
       return state
   }
@@ -32,3 +39,4 @@ export const getShoppingCar = () => {
     }
   }
 }
+export const reset = () => ({ type: RESET_SHOPPING_CART })

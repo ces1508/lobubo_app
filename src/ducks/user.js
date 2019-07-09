@@ -1,4 +1,7 @@
-import { Save } from '../utils/libs'
+import { Save, removeItem } from '../utils/libs'
+import { reset as resetFavorites } from './favorites'
+import { reset as resetProducts, getProducts, getServices } from './products'
+import { reset as resetShoppingCart } from './shoppingCart'
 const SAVE_USER_TOKEN = 'SAVE_USER_TOKEN'
 const SAVE_USER_PROFILE = 'SAVE_USER_PROFILE'
 
@@ -30,4 +33,17 @@ export const setUserToken = token => {
     dispatch({ type: SAVE_USER_TOKEN, token })
   }
 }
+
+export const logout = () => {
+  return async dispatch => {
+    await removeItem('token')
+    dispatch({ type: SAVE_USER_TOKEN, token: null })
+    dispatch(resetFavorites())
+    dispatch(resetShoppingCart())
+    dispatch(resetProducts())
+    dispatch(getProducts())
+    dispatch(getServices())
+  }
+}
+
 export const setUserProfile = profile => ({ type: SAVE_USER_PROFILE, profile })

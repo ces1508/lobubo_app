@@ -67,7 +67,7 @@ class HomeScreen extends Component {
         data={this.props.data}
         numColumns={2}
         ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
-        columnWrappedStyle={{ marginHorizontal: 10 }}
+        columnWrapperStyle={{ justifyContent: 'space-between', paddingHorizontal: 10, marginTop: 5 }}
         renderItem={({ item }) => <Product {...item} />}
       />
     )
