@@ -4,12 +4,13 @@ import PropTypes from 'prop-types'
 
 const Input = props => (
   <View style={styles.container}>
-    {props.icon}
+    {props.leftIcon}
     <TextInput
       ref={props.customRef}
       {...props}
       style={[styles.input, props.customStyle]}
     />
+    {props.rightIcon}
   </View>
 )
 
@@ -29,9 +30,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginHorizontal: 10,
     backgroundColor: 'rgba(0, 0, 0, .3)',
-    marginVertical: 10
+    marginVertical: 10,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   input: {
+    flex: 1,
     color: 'white'
   }
 })
