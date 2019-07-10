@@ -13,6 +13,7 @@ import DrawerIcon from '../components/drawerIcon'
 import ShoppingCartIcon from '../components/shoppingCartIcon'
 import ProductsFavorites from '../screens/favorites/products'
 import BrandFavorites from '../screens/favorites/brands'
+import ProductScreen from '../screens/product'
 import SideMenu from '../components/sideMenu'
 
 const FavoriteStack = createBottomTabNavigator({
@@ -49,10 +50,16 @@ const Stack = createStackNavigator({
   },
   login: {
     screen: LoginScreen
+  },
+  product: {
+    screen: ProductScreen,
+    navigationOptions: {
+      title: 'Productos'
+    }
   }
 },
 {
-  initialRouteName: 'qrReader'
+  initialRouteName: 'home'
 })
 const Drawer = createDrawerNavigator({
   home: {

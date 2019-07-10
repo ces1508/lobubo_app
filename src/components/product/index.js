@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { View, Image, Text, StyleSheet, TouchableWithoutFeedback, Alert, Dimensions } from 'react-native'
 import Theme from '../../Theme'
 import Price from '../price'
@@ -14,7 +15,9 @@ const { width } = Dimensions.get('window')
 const Product = props => {
   let isFavorite = props.favorites.get(`${props.type}${props.id}`)
   return (
-    <TouchableWithoutFeedback style={{ position: 'relative', elevation: 6 }}>
+    <TouchableWithoutFeedback
+      style={{ position: 'relative', elevation: 6 }}
+      onPress={() => props.navigation.push('product', { product: props.full })}>
       <View style={styles.container}>
         <Image
           resizeMode='stretch'
@@ -23,13 +26,17 @@ const Product = props => {
         <View style={{ position: 'relative', paddingLeft: 8 }}>
           <Price
             style={styles.price}
-            value={props.attributes.price}
+            value={props.attributes.price || props.price}
             currency='COP' />
           <Text>{props.attributes.lastPrice}</Text>
           <Text>{props.attributes.name}</Text>
-          <Text>
-            {`${props.attributes.locations[0].city}, ${props.attributes.locations[0].region}`}
-          </Text>
+          {
+            props.type !== 'similar'
+              ? <Text>
+                {`${props.attributes.locations[0].city}, ${props.attributes.locations[0].region}`}
+              </Text>
+              : null
+          }
           <FavoriteIcon
             onPress={() => props.token ? props.makeFavorite(props, isFavorite) : Alert.alert('ups !', 'primero debes inicar sesion')}
             isFavorite={isFavorite}
@@ -41,6 +48,13 @@ const Product = props => {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Product)
+
+Product.defaultProps = {
+  price: 0
+}
+Product.propTypes = {
+  type: PropTypes.oneOf(['normal', 'similar'])
+}
 
 const styles = StyleSheet.create({
   container: {

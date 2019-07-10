@@ -17,6 +17,6 @@ Price.propTypes = {
     PropTypes.number,
     PropTypes.string
   ]).isRequired,
-  style: PropTypes.object
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 }
 export default Price
