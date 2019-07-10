@@ -87,6 +87,9 @@ class Api {
   getBrandsFavorites (params = {}) {
     return this.makeRequest('https://lobubo.com/api/app/users/locations_favorites', 'GET', null, params)
   }
+  getProduct (id) {
+    return this.makeRequest(`https://lobubo.com/api/app/products/${id}`)
+  }
   buildData (data) {
     return {
       data: {

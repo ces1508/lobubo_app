@@ -52,7 +52,7 @@ const Stack = createStackNavigator({
   }
 },
 {
-  initialRouteName: 'login'
+  initialRouteName: 'qrReader'
 })
 const Drawer = createDrawerNavigator({
   home: {

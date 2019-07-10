@@ -22,7 +22,7 @@ class QrReaderScreen extends PureComponent {
 
   async _handleReader (qr) {
     let data = JSON.parse(qr.data.trim())
-    let product = {
+    let productToAdd = {
       quantity: data.quantity || 1,
       product_id: data.id || 17,
       material: data.material || null,
@@ -30,10 +30,11 @@ class QrReaderScreen extends PureComponent {
       color: data.color || null,
       talla: data.talla || null
     }
-    let addProduct = await Api.addProductToCart(product)
+    let product = await Api.getProduct(data.id)
+    let addProduct = await Api.addProductToCart(productToAdd)
     if (!addProduct.error) {
       this.props.getShoppingCar()
-      this.renderAlert('Felicidades', 'el producto se ha agregado   satisfatoriamente')
+      this.renderAlert('Felicidades', `se han agreado ${productToAdd.quantity} ${product.data.data.attributes.name}  al carro de compras`)
       return this.props.navigation.navigate('home')
     }
     this.renderAlert('Ups', 'estamos presentando problemas, por favor intenta mas tarde')
