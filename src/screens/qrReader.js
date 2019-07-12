@@ -1,23 +1,26 @@
 import React, { PureComponent } from 'react'
-import { StyleSheet, Alert } from 'react-native'
+import { StyleSheet } from 'react-native'
 import QR from 'react-native-qrcode-scanner'
 import Api from '../api'
 import { connect } from 'react-redux'
 import { getShoppingCar } from '../ducks/shoppingCart'
+import AlertScan from '../components/alertScan'
+
 const mapStateToProps = state => ({ token: state.user.token })
 const mapDispatchToProps = { getShoppingCar }
-
 class QrReaderScreen extends PureComponent {
   constructor (props) {
     super(props)
-    this.renderAlert = this.renderAlert.bind(this)
-    this._handleReader = this._handleReader.bind(this)
-  }
-
-  componentWillMount () {
-    if (!this.props.token) {
-      this.props.navigation.navigate('login')
+    this.state = {
+      product: null,
+      scanned: false,
+      alert: {
+        title: 'success',
+        type: 'success',
+        image: ''
+      }
     }
+    this._handleReader = this._handleReader.bind(this)
   }
 
   async _handleReader (qr) {
@@ -31,20 +34,39 @@ class QrReaderScreen extends PureComponent {
       talla: data.talla || null
     }
     let product = await Api.getProduct(data.id)
+    if (product.error) {
+      if (product.data.errors[0].status >= 404) {
+        return this.setState({ alert: { type: 'not_found', title: 'Ups, no hemos encontrado el producto :/' }, scanned: true })
+      } else {
+        return this.setState({ alert: { type: 'error', title: 'Lo sentimos, estamos presentando problemas, intenta mas tarde :/' }, scanned: true })
+      }
+    }
+    product = product.data.data
+    if (product.quantity > 1) {
+      return this.setState({ alert: { type: 'out_stock', title: `lo sentimos, ya se nos agotaron :/` }, scanned: true })
+    }
     let addProduct = await Api.addProductToCart(productToAdd)
     if (!addProduct.error) {
       this.props.getShoppingCar()
-      this.renderAlert('Felicidades', `se han agreado ${productToAdd.quantity} ${product.data.data.attributes.name}  al carro de compras`)
-      return this.props.navigation.navigate('home')
+      return this.setState({
+        alert: {
+          type: 'success',
+          title: `se ha agregado ${product.attributes.name} X ${productToAdd.quantity}`,
+          image: product.attributes['image-data'].original.url
+        },
+        scanned: true })
     }
-    this.renderAlert('Ups', 'estamos presentando problemas, por favor intenta mas tarde')
-  }
-  renderAlert (title, message) {
-    return Alert.alert(title, message)
+    this.setState({ alert: { type: 'error', title: 'Lo sentimos, estamos presentando problemas, intenta mas tarde :/' }, scanned: true })
   }
   render () {
     return (
       <QR
+        ref={scan => { this.scanner = scan }}
+        showMarker
+        customMarker={this.state.scanned ? <AlertScan {...this.state.alert} navigation={this.props.navigation} rightButton={() => {
+          this.setState({ scanned: false })
+          this.scanner.reactivate()
+        }} /> : null}
         cameraStyle={styles.camera}
         onRead={this._handleReader}
       />
