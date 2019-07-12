@@ -1,4 +1,6 @@
 import React from 'react'
+import HelmetIcon from '../images/icons/HerramientasYConstruccion.svg'
+import Icons from 'react-native-vector-icons/MaterialCommunityIcons'
 import {
   createStackNavigator,
   createAppContainer,
@@ -15,31 +17,75 @@ import ProductsFavorites from '../screens/favorites/products'
 import BrandFavorites from '../screens/favorites/brands'
 import ProductScreen from '../screens/product'
 import SideMenu from '../components/sideMenu'
+import ServicesScreen from '../screens/services'
+import Theme from '../Theme'
 
+// router to handle tabs in favorites
 const FavoriteStack = createBottomTabNavigator({
   products: ProductsFavorites,
   brands: BrandFavorites
 })
 
-const Stack = createStackNavigator({
-  home: {
+// stack to handle main tabs
+const MainTabs = createBottomTabNavigator({
+  products: {
     screen: HomeScreen,
+    navigationOptions: {
+      tabBarLabel: 'Productos',
+      tabBarIcon: <Icons size={25} name='cube-outline' />
+    }
+  },
+  services: {
+    screen: ServicesScreen,
+    navigationOptions: {
+      tabBarLabel: 'Servicios',
+      tabBarIcon: <HelmetIcon width={30} height={25} />
+    }
+  },
+  scanner: {
+    screen: QrReaderScreen,
+    navigationOptions: {
+      showLabel: false,
+      tabBarIcon: <Icons name='qrcode-scan' size={25} color='#fff' style={{ padding: 20, backgroundColor: Theme.colors.primary, borderRadius: 50, zIndex: 10 }} />
+    }
+  },
+  categories: {
+    screen: HomeScreen,
+    navigationOptions: {
+      tabBarLabel: 'Categorias',
+      tabBarIcon: <Icons name='format-list-bulleted' size={25} color='#000' />
+    }
+  },
+  search: {
+    screen: HomeScreen,
+    navigationOptions: {
+      tabBarLabel: 'Buscar',
+      tabBarIcon: <Icons name='magnify' size={25} color='#000' />
+    }
+  }
+}, {
+  tabBarOptions: {
+    activeTintColor: Theme.colors.secondary
+  }
+})
+
+// stack to wraper al routes
+const stack = createStackNavigator({
+  home: {
+    screen: MainTabs,
     navigationOptions: ({ navigation }) => ({
       title: 'Home',
       headerLeft: <DrawerIcon navigation={navigation} />,
-      headerRight: <ShoppingCartIcon navigation={navigation} />
+      headerRight: <ShoppingCartIcon navigation={navigation} />,
+      tabBarLabel: 'productos',
+      tabBarIcon: <Icons size={30} name='cube-outline' color='#000' />
     })
   },
   shoppingCart: {
     screen: ShoppingCartScreen,
     navigationOptions: {
+      headerMode: 'float',
       title: 'Carrito de Compras'
-    }
-  },
-  qrReader: {
-    screen: QrReaderScreen,
-    navigationOptions: {
-      title: 'Scannear'
     }
   },
   favorites: {
@@ -57,21 +103,15 @@ const Stack = createStackNavigator({
       title: 'Productos'
     }
   }
-},
-{
-  initialRouteName: 'qrReader'
 })
-const Drawer = createDrawerNavigator({
-  home: {
-    screen: Stack,
-    navigationOptions: {
-      drawerLabel: 'home'
-    }
-  }
+
+// stack to add drawer to app
+const AppStack = createDrawerNavigator({
+  app: stack
 }, {
   drawerPosition: 'left',
   drawerType: 'slide',
   contentComponent: SideMenu
 })
 
-export default createAppContainer(Drawer)
+export default createAppContainer(AppStack)

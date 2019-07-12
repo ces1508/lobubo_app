@@ -1,24 +1,16 @@
 import React, { Component } from 'react'
 import { View, StyleSheet } from 'react-native'
 import Carousel from '../components/carousel'
-import Button from '../components/button'
-import Tabs from '../components/tabs'
-import Icons from 'react-native-vector-icons/MaterialCommunityIcons'
-import Theme from '../Theme'
 import Product from '../components/product'
 import listHOC from '../components/list'
 import { connect } from 'react-redux'
-import { getProducts, getServices } from '../ducks/products'
+import { getProducts } from '../ducks/products'
 
 const mapStateToProps = state => ({ data: state.products.data })
-const mapDispatchToProps = { getProducts, getServices }
+const mapDispatchToProps = { getProducts }
 class HomeScreen extends Component {
   constructor (props) {
     super(props)
-    this.state = {
-      tabs: ['productos', 'servicios'],
-      currentTab: 'productos'
-    }
     this.renderListHeader = this.renderListHeader.bind(this)
     this.renderContent = this.renderContent.bind(this)
     this.loadData = this.loadData.bind(this)
@@ -28,12 +20,7 @@ class HomeScreen extends Component {
     return nextProps.data !== this.props.data
   }
   loadData () {
-    let { getProducts, getServices } = this.props
-    let { currentTab } = this.state
-    if (currentTab === 'productos') {
-      return getProducts({ page: 1 })
-    }
-    getServices({ page: 1 })
+    this.props.getProducts({ page: 1 })
   }
   _handleTabChange (value) {
     this.setState({ currentTab: value }, () => this.loadData())
@@ -45,15 +32,6 @@ class HomeScreen extends Component {
     return (
       <View style={styles.header}>
         <Carousel />
-        <View style={styles.buttonSection}>
-          <Button text='Categorias' width='47%'>
-            <Icons name='format-line-style' size={20} style={{ marginRight: 10 }} color='#fff' />
-          </Button>
-          <Button text='Localizar tienda' width='48%' height={50} color={Theme.colors.secondary}>
-            <Icons name='map-marker' size={20} color='#fff' style={{ marginRight: 10 }} />
-          </Button>
-        </View>
-        <Tabs tabs={this.state.tabs} onChange={this._handleTabChange} value={this.state.currentTab} />
       </View>
     )
   }
