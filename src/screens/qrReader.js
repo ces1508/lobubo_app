@@ -69,6 +69,7 @@ class QrReaderScreen extends PureComponent {
         }} /> : null}
         cameraStyle={styles.camera}
         onRead={this._handleReader}
+        cameraProps={{ autoFocus: true }}
       />
     )
   }

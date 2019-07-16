@@ -21,7 +21,6 @@ Input.propTypes = {
   onChangeText: PropTypes.func.isRequired,
   label: PropTypes.string,
   customStyle: PropTypes.object
-
 }
 
 const styles = StyleSheet.create({

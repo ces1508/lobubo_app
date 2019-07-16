@@ -93,6 +93,9 @@ class Api {
   getSimilarProducts (id) {
     return this.makeRequest(`https://lobubo.com/api/app/products/${id}/similar_products`)
   }
+  removeProduct (id, type = 'single') {
+    return this.makeRequest(`https://lobubo.com/api/app/orders/remove_from_cart/${id}`, 'DELETE', null, { type })
+  }
   buildData (data) {
     return {
       data: {

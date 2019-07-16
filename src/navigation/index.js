@@ -18,6 +18,8 @@ import BrandFavorites from '../screens/favorites/brands'
 import ProductScreen from '../screens/product'
 import SideMenu from '../components/sideMenu'
 import ServicesScreen from '../screens/services'
+import SearchScreen from '../screens/search'
+import CategoriesScreen from '../screens/categories'
 import Theme from '../Theme'
 
 // router to handle tabs in favorites
@@ -46,19 +48,20 @@ const MainTabs = createBottomTabNavigator({
     screen: QrReaderScreen,
     navigationOptions: {
       showLabel: false,
-      tabBarIcon: <Icons name='qrcode-scan' size={25} color='#fff' style={{ padding: 20, backgroundColor: Theme.colors.primary, borderRadius: 50, zIndex: 10 }} />
+      tabBarIcon: ({ focused, tintColor }) => (<Icons name='qrcode-scan' size={25} color='#fff' style={{ padding: 20, backgroundColor: focused ? tintColor : Theme.colors.primary, borderRadius: 50, zIndex: 20 }} />)
     }
   },
   categories: {
-    screen: HomeScreen,
+    screen: CategoriesScreen,
     navigationOptions: {
       tabBarLabel: 'Categorias',
       tabBarIcon: <Icons name='format-list-bulleted' size={25} color='#000' />
     }
   },
   search: {
-    screen: HomeScreen,
+    screen: SearchScreen,
     navigationOptions: {
+      headerMode: 'none',
       tabBarLabel: 'Buscar',
       tabBarIcon: <Icons name='magnify' size={25} color='#000' />
     }
@@ -69,12 +72,12 @@ const MainTabs = createBottomTabNavigator({
   }
 })
 
-// stack to wraper al routes
+// stack to wrapper al routes
 const stack = createStackNavigator({
   home: {
     screen: MainTabs,
     navigationOptions: ({ navigation }) => ({
-      title: 'Home',
+      title: 'Lobubo',
       headerLeft: <DrawerIcon navigation={navigation} />,
       headerRight: <ShoppingCartIcon navigation={navigation} />,
       tabBarLabel: 'productos',

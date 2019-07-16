@@ -19,14 +19,7 @@ class ProductScreen extends PureComponent {
   }
   state = {
     similar: [],
-    quantity: 1,
-    adding: false,
-    productOptions: {
-      color: null,
-      material: null,
-      size: null,
-      talla: null
-    }
+    adding: false
   }
   async componentDidMount () {
     let similar = await Api.getSimilarProducts(this.product.id)
@@ -37,13 +30,12 @@ class ProductScreen extends PureComponent {
     let product = this.product
     this.props.makeFavorite(product, this.props.favorites.get(`${product.type}${product.id}`))
   }
-  async addToCart () {
+  async addToCart (product) {
     if (!this.props.token) return this.props.navigation.navigate('login')
-    let productId = this.product.id
-    let { quantity, productOptions, adding } = this.state
+    let { adding } = this.state
     if (!adding) {
       this.setState({ adding: true })
-      let add = await Api.addProductToCart({ quantity, ...productOptions, product_id: productId })
+      let add = await Api.addProductToCart(product)
       if (add.error) {
         return this.setState({ addError: true, message: add.error.message, adding: false })
       }
@@ -51,7 +43,7 @@ class ProductScreen extends PureComponent {
     }
   }
   render () {
-    let { adding, quantity } = this.state
+    let { adding } = this.state
     return (
       <ScrollView showsVerticalScrollIndicator={false} scrollsToTop>
         <Product
@@ -59,9 +51,7 @@ class ProductScreen extends PureComponent {
           handleFavorite={this._handleFavorite}
           product={this.product}
           adding={adding}
-          quantity={quantity}
           handleAddToCart={this.addToCart}
-          handleQuantity={value => this.setState({ quantity: value })}
         />
         <View style={[styles.section, { paddingHorizontal: 10 }]}>
           <Text style={[styles.textEmphasis, { marginBottom: 15 }]}>Quizas te pueda interesar</Text>

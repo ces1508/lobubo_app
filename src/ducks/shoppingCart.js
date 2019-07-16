@@ -2,11 +2,14 @@ import Api from '../api'
 const GET_PRODUCTS_OF_CART = 'GET_PRODUCTS_OF_CART'
 const SET_SHOPPING_CART_LOADER = 'SET_SHOPPING_CART_LOADER'
 const RESET_SHOPPING_CART = '/shopping_cart/reset'
+// const ADD_PRODUCT_TO_SHOPPING_CART = 'shopping_cart/add/product'
+const SET_ADDING_TO_SHOPPING_CART = 'shopping_cart/set/add/loader'
 
 const initialState = {
   products: [],
   isLoading: false,
-  adding: false
+  adding: false,
+  lastProductAdded: null
 }
 
 export default function shoppingCarReducer (state = initialState, action) {
@@ -21,6 +24,12 @@ export default function shoppingCarReducer (state = initialState, action) {
       return {
         ...state,
         products: []
+      }
+    }
+    case SET_ADDING_TO_SHOPPING_CART: {
+      return {
+        ...state,
+        adding: action.flag
       }
     }
     default:
@@ -40,5 +49,27 @@ export const getShoppingCar = () => {
     }
   }
 }
-
+export const addProductToCart = (product, type = 'refresh') => {
+  return async dispatch => {
+    dispatch({ type: SET_ADDING_TO_SHOPPING_CART, flag: true })
+    let add = await Api.addProductToCart(product)
+    if (!add.error) {
+      if (type === 'refresh') dispatch(getShoppingCar())
+    }
+    dispatch({ type: SET_ADDING_TO_SHOPPING_CART, flag: false })
+  }
+}
+export const removeProductToCart = (id, type = 'single') => {
+  return async dispatch => {
+    dispatch({ type: SET_ADDING_TO_SHOPPING_CART, flag: false })
+    let remove = await Api.removeProduct(id)
+    if (!remove.error) {
+      dispatch(getShoppingCar())
+    }
+    dispatch({ type: SET_ADDING_TO_SHOPPING_CART, flag: false })
+  }
+}
+// function refreshWhitouRequest() {
+//   return false
+// }
 export const reset = () => ({ type: RESET_SHOPPING_CART })
