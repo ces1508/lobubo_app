@@ -96,6 +96,9 @@ class Api {
   removeProduct (id, type = 'single') {
     return this.makeRequest(`https://lobubo.com/api/app/orders/remove_from_cart/${id}`, 'DELETE', null, { type })
   }
+  getCategories () {
+    return this.makeRequest('https://lobubo.com/api/app/categories')
+  }
   buildData (data) {
     return {
       data: {
