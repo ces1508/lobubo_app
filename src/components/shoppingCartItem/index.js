@@ -16,16 +16,15 @@ const mapDispatchToProps = { addProductToCart, removeProductToCart }
 
 class ShoppingCarItem extends PureComponent {
   _handleChange = value => {
-    console.log('value changed', value)
     let { item } = this.props
     if (value > item.attributes.quantity) {
       let product = {
         product_id: item.attributes.product.id,
         quantity: 1,
-        size: item.size || null,
-        color: item.color || null,
-        talla: item.talla || null,
-        material: item.material || null
+        size: item.attributes.size || null,
+        color: item.attributes.color || null,
+        talla: item.attributes.talla || null,
+        material: item.attributes.material || null
 
       }
       this.props.addProductToCart(product)
@@ -34,13 +33,28 @@ class ShoppingCarItem extends PureComponent {
       this.props.removeProductToCart(orderItemId)
     }
   }
+  renderOptions = () => {
+    let { item } = this.props
+    return (
+      <View style={{ flexDirection: 'column', flexWrap: 'wrap', marginBottom: 10 }}>
+        {item.attributes.color
+          ? <View style={{ flexDirection: 'row' }}>
+            <Text>Color: {item.attributes.color} </Text>
+            <View style={{ width: 20, height: 20, borderRadius: 10, backgroundColor: item.attributes.product.colors.find(color => color.name === item.attributes.color).value }} />
+          </View> : null}
+        {item.attributes.size ? <Text>Tamaño: {item.attributes.size} </Text> : null}
+        {item.attributes.talla ? <Text>Talla: {item.attributes.talla} </Text> : null}
+        {item.attributes.material ? <Text>Material: {item.attributes.material} </Text> : null}
+      </View>
+    )
+  }
   render () {
     let { item } = this.props
     return (
       <View style={styles.product}>
         <Image
           source={{ uri: item.attributes.product.image_data.url }}
-          style={{ width: 110, height: 110 }} />
+          style={{ width: 110 }} />
         <View style={styles.productDescription}>
           <Text
             numberOfLines={2}
@@ -50,6 +64,7 @@ class ShoppingCarItem extends PureComponent {
             {item.attributes.product.name}
           </Text>
           <Price value={item.attributes.quantity * item.attributes.product.price} style={styles.productPrice} />
+          {this.renderOptions()}
           { this.props.adding
             ? <Text>... Cargando</Text>
             : <Numeric
