@@ -5,7 +5,8 @@ import {
   createStackNavigator,
   createAppContainer,
   createDrawerNavigator,
-  createBottomTabNavigator
+  createBottomTabNavigator,
+  createMaterialTopTabNavigator
 } from 'react-navigation'
 import HomeScreen from '../screens/home'
 import LoginScreen from '../screens/login'
@@ -20,6 +21,7 @@ import SideMenu from '../components/sideMenu'
 import ServicesScreen from '../screens/services'
 import SearchScreen from '../screens/search'
 import CategoriesScreen from '../screens/categories'
+import ProductsByCategory from '../screens/productsByCategory'
 import Theme from '../Theme'
 
 // router to handle tabs in favorites
@@ -72,6 +74,24 @@ const MainTabs = createBottomTabNavigator({
   }
 })
 
+const productsAndServicesByCategory = createMaterialTopTabNavigator({
+  productsByCategory: {
+    screen: ProductsByCategory,
+    navigationOptions: {
+      tabBarLabel: 'Productos'
+    }
+
+  },
+  servicesByCategory: {
+    screen: ProductsByCategory,
+    navigationOptions: {
+      tabBarLabel: 'Servicios'
+    }
+  }
+}, {
+  lazy: true
+})
+
 // stack to wrapper al routes
 const stack = createStackNavigator({
   home: {
@@ -104,6 +124,15 @@ const stack = createStackNavigator({
     screen: ProductScreen,
     navigationOptions: {
       title: 'Productos'
+    }
+  },
+  productsByCategory: {
+    screen: productsAndServicesByCategory,
+    navigationOptions: ({ navigation }) => {
+      let category = navigation.getParam('category')
+      return {
+        title: category.attributes.name
+      }
     }
   }
 })

@@ -99,6 +99,9 @@ class Api {
   getCategories () {
     return this.makeRequest('https://lobubo.com/api/app/categories')
   }
+  getProductsByCategory (id, params, type = 'products') {
+    return this.makeRequest(`https://lobubo.com/api/app/categories/${id}/${type}`, 'GET', null, params)
+  }
   buildData (data) {
     return {
       data: {
