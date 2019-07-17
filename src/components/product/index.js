@@ -14,6 +14,7 @@ const { width } = Dimensions.get('window')
 
 const Product = props => {
   let isFavorite = props.favorites.get(`${props.type}${props.id}`)
+  console.log('product is FAvorite', props)
   return (
     <TouchableWithoutFeedback
       style={{ position: 'relative', elevation: 6 }}
@@ -31,7 +32,7 @@ const Product = props => {
           <Text>{props.attributes.lastPrice}</Text>
           <Text>{props.attributes.name}</Text>
           {
-            props.type !== 'similar'
+            props.cardType !== 'similar'
               ? <Text>
                 {`${props.attributes.locations[0].city}, ${props.attributes.locations[0].region}`}
               </Text>
@@ -50,10 +51,11 @@ const Product = props => {
 export default connect(mapStateToProps, mapDispatchToProps)(Product)
 
 Product.defaultProps = {
-  price: 0
+  price: 0,
+  cardType: 'normal'
 }
 Product.propTypes = {
-  type: PropTypes.oneOf(['normal', 'similar'])
+  cardType: PropTypes.oneOf(['normal', 'similar'])
 }
 
 const styles = StyleSheet.create({

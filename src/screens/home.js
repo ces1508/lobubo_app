@@ -5,8 +5,9 @@ import Product from '../components/product'
 import listHOC from '../components/list'
 import { connect } from 'react-redux'
 import { getProducts } from '../ducks/products'
+import Empty from '../components/emptyList'
 
-const mapStateToProps = state => ({ data: state.products.data })
+const mapStateToProps = state => ({ data: state.products.data, isLoading: state.products.isLoading })
 const mapDispatchToProps = { getProducts }
 class HomeScreen extends Component {
   constructor (props) {
@@ -39,6 +40,7 @@ class HomeScreen extends Component {
     let ProductList = listHOC(this.loadData)
     return (
       <ProductList
+        ListEmptyComponent={() => <Empty isLoading={this.props.isLoading} />}
         extraData={this.state}
         ListHeaderComponent={() => this.renderListHeader()}
         style={{ flex: 1 }}
@@ -51,6 +53,7 @@ class HomeScreen extends Component {
     )
   }
   render () {
+    console.log('this.props', this.props)
     return this.renderContent()
   }
 }

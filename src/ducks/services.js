@@ -1,12 +1,13 @@
 import Api from '../api'
 import { setManyFavorites } from './favorites'
-const GET_SERVICES = '/favorites/get'
-const RESET_SERVICES_LIST = '/favorites/rest'
+const GET_SERVICES = '/services/get/list'
+const SET_LOADER = 'services/set/loader'
+const RESET_SERVICES_LIST = '/services/rest/list'
 
 const initialState = {
   data: [],
   error: null,
-  isLoading: false
+  isLoading: true
 }
 
 export default function productsReducer (state = initialState, action) {
@@ -14,12 +15,18 @@ export default function productsReducer (state = initialState, action) {
     case GET_SERVICES:
       return {
         ...state,
-        data: action.services
+        data: action.services,
+        isLoading: false
       }
     case RESET_SERVICES_LIST:
       return {
         ...state,
         data: []
+      }
+    case SET_LOADER:
+      return {
+        ...state,
+        isLoading: action.flag
       }
     default:
       return state
@@ -30,6 +37,7 @@ export default function productsReducer (state = initialState, action) {
 
 export const getServices = params => {
   return async dispatch => {
+    dispatch(setLoader())
     let services = await Api.getServices(params)
     if (!services.error) {
       let favorites = []
@@ -45,4 +53,7 @@ export const getServices = params => {
 
 export function reset () {
   return { type: RESET_SERVICES_LIST }
+}
+function setLoader (flag = true) {
+  return { type: SET_LOADER, flag }
 }

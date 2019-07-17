@@ -3,10 +3,12 @@ import { setManyFavorites } from './favorites'
 const GET_CAROUSEL_PRODUCTS = 'GET_CAROUSEL_PRODUCTS'
 const GET_PRODUCTS = 'GET_PRODUCTS'
 const RESET_PRODUCTS_LIST = 'RESET_PRODUCTS_LIST'
+const SET_LOADER = '/products/set/loader'
 
 const initialState = {
   carousel: [],
-  data: []
+  data: [],
+  isLoading: true
 }
 
 export default function productsReducer (state = initialState, action) {
@@ -20,12 +22,17 @@ export default function productsReducer (state = initialState, action) {
       return {
         ...state,
         data: action.products,
-        favorites: action.favorites
+        isLoading: false
       }
     case RESET_PRODUCTS_LIST:
       return {
         ...state,
         data: []
+      }
+    case SET_LOADER:
+      return {
+        ...state,
+        isLoading: action.flag
       }
     default:
       return state
@@ -59,6 +66,7 @@ const loadProducts = (resource, params) => {
   return async dispatch => {
     let products = null
     dispatch(reset())
+    dispatch(setLoading())
     if (resource === 'products') {
       products = await Api.getProducts(params)
     } else {
@@ -70,7 +78,7 @@ const loadProducts = (resource, params) => {
         if (item.attributes['is-favorite']) favorites.push(item)
       })
       dispatch(setManyFavorites(favorites))
-      return dispatch({ type: GET_PRODUCTS, products: products.data.data, favorites })
+      return dispatch({ type: GET_PRODUCTS, products: products.data.data })
     }
     return dispatch({ type: GET_PRODUCTS, products: [], favorites: new Map() })
   }
@@ -86,4 +94,7 @@ export function getServices (params) {
 
 export function reset () {
   return { type: RESET_PRODUCTS_LIST }
+}
+function setLoading (flag = true) {
+  return { type: SET_LOADER, flag }
 }

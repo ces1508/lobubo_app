@@ -139,18 +139,10 @@ const stack = createStackNavigator({
 {
   initialRouteName: 'home'
 })
-const Drawer = createDrawerNavigator({
-  home: {
-    screen: stack,
-    navigationOptions: {
-      title: 'Productos'
-    }
-  }
-})
 
 // stack to add drawer to app
 const AppStack = createDrawerNavigator({
-  app: Drawer
+  app: stack
 }, {
   drawerPosition: 'left',
   drawerType: 'slide',

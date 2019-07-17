@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
-import { View, Text, FlatList, TouchableOpacity } from 'react-native'
+import { View, Text, FlatList, TouchableOpacity, TextInput } from 'react-native'
 import Api from '../api'
 import SvgUri from 'react-native-svg-uri'
 import Theme from '../Theme'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
+import Empty from '../components/emptyList'
 
 export default class CategoriesScreen extends Component {
   constructor (props) {
@@ -12,11 +13,13 @@ export default class CategoriesScreen extends Component {
   }
   async componentDidMount () {
     let categories = await Api.getCategories()
-    this.setState({ categories: categories.data.data })
+    this.setState({ categories: categories.data.data, isLoading: false })
   }
   render () {
     return (
       <FlatList
+        ListHeaderComponent={() => <TextInput />}
+        ListEmptyComponent={() => <Empty isLoading={this.state.isLoading} />}
         keyExtractor={item => item.id}
         renderItem={({ item }) => (
           <TouchableOpacity

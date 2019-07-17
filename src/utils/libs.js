@@ -1,4 +1,4 @@
-import { AsyncStorage } from 'react-native'
+import AsyncStorage from '@react-native-community/async-storage'
 
 export const getCurrentPosition = () => {
   return new Promise((resolve, reject) => {
