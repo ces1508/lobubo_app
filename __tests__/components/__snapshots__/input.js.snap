@@ -1,0 +1,94 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`render correctly 1`] = `
+<View
+  style={
+    Object {
+      "alignItems": "center",
+      "backgroundColor": "rgba(0, 0, 0, .3)",
+      "borderRadius": 30,
+      "flexDirection": "row",
+      "justifyContent": "center",
+      "marginHorizontal": 10,
+      "marginVertical": 10,
+      "paddingHorizontal": 10,
+    }
+  }
+>
+  <TextInput
+    allowFontScaling={true}
+    onChangeText={[Function]}
+    rejectResponderTermination={true}
+    style={
+      Array [
+        Object {
+          "color": "white",
+          "flex": 1,
+        },
+        undefined,
+      ]
+    }
+    underlineColorAndroid="transparent"
+  />
+</View>
+`;
+
+exports[`render with leftComponent 1`] = `
+<View
+  style={
+    Object {
+      "alignItems": "center",
+      "backgroundColor": "rgba(0, 0, 0, .3)",
+      "borderRadius": 30,
+      "flexDirection": "row",
+      "justifyContent": "center",
+      "marginHorizontal": 10,
+      "marginVertical": 10,
+      "paddingHorizontal": 10,
+    }
+  }
+>
+  <Text
+    allowFontScaling={false}
+    style={
+      Array [
+        Object {
+          "color": undefined,
+          "fontSize": 12,
+        },
+        undefined,
+        Object {
+          "fontFamily": "Material Design Icons",
+          "fontStyle": "normal",
+          "fontWeight": "normal",
+        },
+        Object {},
+      ]
+    }
+  >
+    
+  </Text>
+  <TextInput
+    allowFontScaling={true}
+    leftIcon={
+      <Icon
+        allowFontScaling={false}
+        name="account"
+        size={12}
+      />
+    }
+    onChangeText={[Function]}
+    rejectResponderTermination={true}
+    style={
+      Array [
+        Object {
+          "color": "white",
+          "flex": 1,
+        },
+        undefined,
+      ]
+    }
+    underlineColorAndroid="transparent"
+  />
+</View>
+`;

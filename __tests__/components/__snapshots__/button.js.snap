@@ -1,0 +1,79 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`render correctly 1`] = `
+<View
+  accessible={true}
+  isTVSelectable={true}
+  onResponderGrant={[Function]}
+  onResponderMove={[Function]}
+  onResponderRelease={[Function]}
+  onResponderTerminate={[Function]}
+  onResponderTerminationRequest={[Function]}
+  onStartShouldSetResponder={[Function]}
+  style={
+    Object {
+      "alignItems": "center",
+      "backgroundColor": "#807bff",
+      "borderRadius": 5,
+      "flexDirection": "row",
+      "height": undefined,
+      "justifyContent": "center",
+      "opacity": 1,
+      "padding": 15,
+      "width": undefined,
+    }
+  }
+>
+  <Text
+    style={
+      Array [
+        Object {
+          "color": "#fff",
+        },
+        undefined,
+      ]
+    }
+  >
+    aceptar
+  </Text>
+</View>
+`;
+
+exports[`render whit custom width 1`] = `
+<View
+  accessible={true}
+  isTVSelectable={true}
+  onResponderGrant={[Function]}
+  onResponderMove={[Function]}
+  onResponderRelease={[Function]}
+  onResponderTerminate={[Function]}
+  onResponderTerminationRequest={[Function]}
+  onStartShouldSetResponder={[Function]}
+  style={
+    Object {
+      "alignItems": "center",
+      "backgroundColor": "#807bff",
+      "borderRadius": 5,
+      "flexDirection": "row",
+      "height": undefined,
+      "justifyContent": "center",
+      "opacity": 1,
+      "padding": 15,
+      "width": "200",
+    }
+  }
+>
+  <Text
+    style={
+      Array [
+        Object {
+          "color": "#fff",
+        },
+        undefined,
+      ]
+    }
+  >
+    aceptar
+  </Text>
+</View>
+`;

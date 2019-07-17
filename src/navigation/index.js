@@ -123,7 +123,7 @@ const stack = createStackNavigator({
   product: {
     screen: ProductScreen,
     navigationOptions: {
-      title: 'Productos'
+      // headerStyle: { backgroundColor: 'transparent' }
     }
   },
   productsByCategory: {
@@ -135,11 +135,22 @@ const stack = createStackNavigator({
       }
     }
   }
+},
+{
+  initialRouteName: 'home'
+})
+const Drawer = createDrawerNavigator({
+  home: {
+    screen: stack,
+    navigationOptions: {
+      title: 'Productos'
+    }
+  }
 })
 
 // stack to add drawer to app
 const AppStack = createDrawerNavigator({
-  app: stack
+  app: Drawer
 }, {
   drawerPosition: 'left',
   drawerType: 'slide',

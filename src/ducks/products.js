@@ -2,7 +2,6 @@ import Api from '../api'
 import { setManyFavorites } from './favorites'
 const GET_CAROUSEL_PRODUCTS = 'GET_CAROUSEL_PRODUCTS'
 const GET_PRODUCTS = 'GET_PRODUCTS'
-const MAKE_PRODUCT_FAVORITE = 'MAKE_PRODUCT_FAVORITE'
 const RESET_PRODUCTS_LIST = 'RESET_PRODUCTS_LIST'
 
 const initialState = {
@@ -23,18 +22,10 @@ export default function productsReducer (state = initialState, action) {
         data: action.products,
         favorites: action.favorites
       }
-    case MAKE_PRODUCT_FAVORITE:
-      let favorites = new Map(state.favorites)
-      favorites.set(action.id, !favorites.get(action.id))
-      return {
-        ...state,
-        favorites
-      }
     case RESET_PRODUCTS_LIST:
       return {
         ...state,
-        data: [],
-        favorites: new Map()
+        data: []
       }
     default:
       return state
