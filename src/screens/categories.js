@@ -1,44 +1,41 @@
-import React, { Component } from 'react'
-import { View, Text, FlatList, TouchableOpacity, TextInput } from 'react-native'
+import React, { PureComponent } from 'react'
+import { FlatList } from 'react-native'
 import Api from '../api'
-import SvgUri from 'react-native-svg-uri'
-import Theme from '../Theme'
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
+import InputFilter from '../components/inputFilter'
+import CategoryItem from '../components/categoryItem'
 import Empty from '../components/emptyList'
 
-export default class CategoriesScreen extends Component {
+export default class CategoriesScreen extends PureComponent {
   constructor (props) {
     super(props)
-    this.state = { categories: [], isLoading: true }
+    this.state = {
+      categories: [],
+      isLoading: true,
+      data: [],
+      q: ''
+    }
+    this.handleInput = this.handleInput.bind(this)
   }
   async componentDidMount () {
     let categories = await Api.getCategories()
-    this.setState({ categories: categories.data.data, isLoading: false })
+    this.setState({ categories: categories.data.data, data: categories.data.data, isLoading: false })
+  }
+  handleInput (q) {
+    this.setState({
+      q,
+      data: this.state.categories.filter(item => item.attributes.name.includes(q))
+    })
   }
   render () {
     return (
       <FlatList
-        ListHeaderComponent={() => <TextInput />}
-        ListEmptyComponent={() => <Empty isLoading={this.state.isLoading} />}
+        data={this.state.data}
+        stickyHeaderIndices={[0]}
+        showsVerticalScrollIndicator={false}
+        ListHeaderComponent={<InputFilter onChangeText={this.handleInput} />}
+        ListEmptyComponent={<Empty isLoading={this.state.isLoading} />}
         keyExtractor={item => item.id}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            onPress={() => this.props.navigation.navigate('productsByCategory', { category: item })}
-            style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 30 }}>
-            <View style={{ backgroundColor: Theme.colors.primary, width: 50, height: 50, borderRadius: 25, justifyContent: 'center', alignItems: 'center' }}>
-              <SvgUri
-                width='25'
-                height='25'
-                fill='#fff'
-                fillAll
-                svgXmlData={item.attributes.icon.raw} />
-            </View>
-            <Text style={{ marginLeft: 10, flex: 1 }}>
-              {item.attributes.name}
-            </Text>
-            <Icon name='chevron-right' size={30} />
-          </TouchableOpacity>)}
-        data={this.state.categories}
+        renderItem={({ item }) => <CategoryItem item={item} navigation={this.props.navigation} /> }
       />
     )
   }
