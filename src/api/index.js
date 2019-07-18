@@ -1,5 +1,6 @@
 import axios from 'axios'
 import DeviceInfo from 'react-native-device-info'
+import qs from 'qs'
 import { getItem, removeItem, Save } from '../utils/libs'
 
 axios.defaults.headers.common['X-Device-ID'] = DeviceInfo.getUniqueID()
@@ -7,6 +8,12 @@ axios.defaults.headers.common['X-Device-ID'] = DeviceInfo.getUniqueID()
 axios.interceptors.request.use(async (config) => {
   let customHeaders = {}
   let token = await getItem('token')
+  config.paramsSerializer = params => {
+    return qs.stringify(params, {
+      arrayFormat: 'brackets',
+      encode: false
+    })
+  }
   if (token) customHeaders['Authorization'] = `Bearer ${token}`
   config.headers = { ...config.headers, ...customHeaders, 'Accept-Language': 'es' }
   return config
@@ -101,6 +108,16 @@ class Api {
   }
   getProductsByCategory (id, params, type = 'products') {
     return this.makeRequest(`https://lobubo.com/api/app/categories/${id}/${type}`, 'GET', null, params)
+  }
+  filter (q, filter = 'all', page = 1) {
+    return this.makeRequest('https://lobubo.com/api/app/users/bar_search', 'GET', null, {
+      type_search: filter,
+      data: {
+        attributes: {
+          query: q
+        }
+      }
+    })
   }
   buildData (data) {
     return {

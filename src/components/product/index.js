@@ -14,7 +14,6 @@ const { width } = Dimensions.get('window')
 
 const Product = props => {
   let isFavorite = props.favorites.get(`${props.type}${props.id}`)
-  console.log('product is FAvorite', props)
   return (
     <TouchableWithoutFeedback
       style={{ position: 'relative', elevation: 6 }}

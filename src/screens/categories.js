@@ -35,7 +35,7 @@ export default class CategoriesScreen extends PureComponent {
         ListHeaderComponent={<InputFilter onChangeText={this.handleInput} />}
         ListEmptyComponent={<Empty isLoading={this.state.isLoading} />}
         keyExtractor={item => item.id}
-        renderItem={({ item }) => <CategoryItem item={item} navigation={this.props.navigation} /> }
+        renderItem={({ item }) => <CategoryItem item={item} navigation={this.props.navigation} />}
       />
     )
   }
