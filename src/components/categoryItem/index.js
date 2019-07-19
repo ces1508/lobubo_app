@@ -12,7 +12,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 const CategoryItem = props => {
   return (
     <TouchableOpacity
-      onPress={() => this.props.navigation.navigate('productsByCategory', { category: props.item })}
+      onPress={() => props.navigation.navigate('productsByCategory', { category: props.item })}
       style={styles.container}>
       <View style={styles.category}>
         <SvgUri
