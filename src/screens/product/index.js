@@ -22,7 +22,8 @@ class ProductScreen extends PureComponent {
     adding: false
   }
   async componentDidMount () {
-    let similar = await Api.getSimilarProducts(this.product.id)
+    let similar = await Api.getSimilarProducts(this.product.id) // get similar products from server
+    // save response from server in local state
     this.setState({ similar: similar.data.data })
   }
   _handleFavorite () {
@@ -30,16 +31,24 @@ class ProductScreen extends PureComponent {
     let product = this.product
     this.props.makeFavorite(product, this.props.favorites.get(`${product.type}${product.id}`))
   }
+
+  /**
+   * initialized method addToCart
+    * @param product, the param product should be a object
+    * this method allow add a single product to shopping cart
+  */
+
   async addToCart (product) {
-    if (!this.props.token) return this.props.navigation.navigate('login')
-    let { adding } = this.state
-    if (!adding) {
+    if (!this.props.token) return this.props.navigation.navigate('login') // validate if user is logged
+    let { adding } = this.state // get adding to local state
+    if (!adding) { // validate if already exists a request to add
+      // set state adding in true, to can't allow user send another request until server response
       this.setState({ adding: true })
-      let add = await Api.addProductToCart(product)
-      if (add.error) {
+      let add = await Api.addProductToCart(product) // send ajax request to server
+      if (add.error) { // validate if server responses with a error
         return this.setState({ addError: true, message: add.error.message, adding: false })
       }
-      this.setState({ adding: false })
+      this.setState({ adding: false }) // set adding in false to allow user send another request to add
     }
   }
   render () {
@@ -61,7 +70,7 @@ class ProductScreen extends PureComponent {
             ItemSeparatorComponent={() => <View style={{ width: 20 }} />}
             data={this.state.similar}
             keyExtractor={item => item.id}
-            renderItem={({ item }) => <ProductItem {...item} full={item} type='similar' navigation={this.props.navigation} />}
+            renderItem={({ item }) => <ProductItem {...item} full={item} cardType='similar' navigation={this.props.navigation} />}
           />
         </View>
       </ScrollView>
