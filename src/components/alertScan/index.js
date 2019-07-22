@@ -5,7 +5,7 @@ import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native'
 import PropTypes from 'prop-types'
 
 const AlertScan = props => {
-  console.log(props)
+  console.log('props alert scan', props)
   return (
     <View style={styles.container}>
       <Text
