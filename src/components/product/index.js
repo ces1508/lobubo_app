@@ -6,6 +6,7 @@ import Price from '../price'
 import FavoriteIcon from '../favorite'
 import { makeFavorite } from '../../ducks/favorites'
 import { connect } from 'react-redux'
+import Rating from 'react-native-easy-rating'
 
 const mapDispatchToProps = { makeFavorite }
 const mapStateToProps = state => ({ favorites: state.favorites.currentFavorites, token: state.user.token })
@@ -29,6 +30,7 @@ const Product = props => {
             value={props.attributes.price || props.price}
             currency='COP' />
           <Text>{props.attributes.lastPrice}</Text>
+          <Rating rating={props.attributes['reviews-score']} editable={false} iconHeight={10} iconWidth={10} />
           <Text>{props.attributes.name}</Text>
           {
             props.cardType !== 'similar'

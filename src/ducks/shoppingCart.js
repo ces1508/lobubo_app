@@ -69,7 +69,5 @@ export const removeProductToCart = (id, type = 'single') => {
     dispatch({ type: SET_ADDING_TO_SHOPPING_CART, flag: false })
   }
 }
-// function refreshWhitouRequest() {
-//   return false
-// }
+
 export const reset = () => ({ type: RESET_SHOPPING_CART })
