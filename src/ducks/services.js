@@ -5,9 +5,9 @@ const SET_LOADER = 'services/set/loader'
 const RESET_SERVICES_LIST = '/services/rest/list'
 
 const initialState = {
-  data: [],
-  error: null,
-  isLoading: true
+  data: [], // here will be data sended from server
+  error: null, // this var will save the error send by server
+  isLoading: true // flag to handle  loading
 }
 
 export default function productsReducer (state = initialState, action) {
@@ -38,13 +38,14 @@ export default function productsReducer (state = initialState, action) {
 export const getServices = params => {
   return async dispatch => {
     dispatch(setLoader())
-    let services = await Api.getServices(params)
+    let services = await Api.getServices(params) // make request to get services from server
     if (!services.error) {
       let favorites = []
+      // build array with only services favorites
       services.data.data.forEach(item => {
         if (item.attributes['is-favorite']) favorites.push(item)
       })
-      dispatch(setManyFavorites(favorites))
+      dispatch(setManyFavorites(favorites)) // save services favorites
       return dispatch({ type: GET_SERVICES, services: services.data.data })
     }
     return dispatch({ type: GET_SERVICES, services: [], error: true })

@@ -9,7 +9,6 @@ import {
 import Theme from '../../Theme'
 import { Header } from 'react-navigation'
 const { width, height } = Dimensions.get('screen')
-console.log(height)
 
 export default class QRReader extends React.Component {
   constructor (props) {

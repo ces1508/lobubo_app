@@ -17,7 +17,6 @@ class ServicesScreen extends Component {
     this.props.getServices({})
   }
   render () {
-    console.log('propierties ', this.props)
     let ListServices = list(() => this.props.getServices({}))
     return (
       <ListServices

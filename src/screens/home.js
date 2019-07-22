@@ -15,16 +15,16 @@ class HomeScreen extends Component {
     this.renderListHeader = this.renderListHeader.bind(this)
     this.renderContent = this.renderContent.bind(this)
     this.loadData = this.loadData.bind(this)
-    this._handleTabChange = this._handleTabChange.bind(this)
   }
   shouldComponentUpdate (nextProps, nextState) {
     return nextProps.data !== this.props.data
   }
+  /**
+   * this method dispatch to redux a to get products from api
+   */
   loadData () {
+    // get products from server, if you want set page, send a object with query params
     this.props.getProducts({ page: 1 })
-  }
-  _handleTabChange (value) {
-    this.setState({ currentTab: value }, () => this.loadData())
   }
   componentDidMount () {
     this.loadData()
@@ -53,7 +53,6 @@ class HomeScreen extends Component {
     )
   }
   render () {
-    console.log('this.props', this.props)
     return this.renderContent()
   }
 }

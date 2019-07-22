@@ -25,37 +25,46 @@ export default class SearchScreen extends Component {
     this.renderItem = this.renderItem.bind(this)
     this.header = this.header.bind(this)
   }
+  // method to handle input
   handleTextChange (value) {
-    this.setState({ word: value })
-    this.getResults(value)
-  }
-  async getResults () {
+    this.setState({ word: value }) // save input value in local state
     if (!this.state.isSearching) {
-      this.setState({ isSearching: true })
-      let data = await Api.filter(this.state.q)
-      if (!data.error) {
-        if (data.data.data) {
-          this.setState({ isSearching: false, data: data.data.data }, this.applyFilters)
-          if (this.state.q !== this.state.word) {
-            this.setState({ q: this.state.word })
-            return this.getResults()
-          }
+      this.getResults()
+    }
+  }
+
+  // function to make request
+  async getResults () {
+    this.setState({ isSearching: true, q: this.state.word }) // set local state to don't have more than one request
+    let data = await Api.filter(this.state.q)
+    if (!data.error) { // validate if server doesn't response with a error
+      if (data.data.data) { // validate if sever response with a valid data
+        // save server response in local state, and when state will be saved call method to apply filters
+        this.setState({ isSearching: false, data: data.data.data }, this.applyFilters)
+        if (this.state.q !== this.state.word) { // validate if word sended to server is different to word in current state
+          return this.getResults() // call it self
         }
-        this.setState({ isSearching: false, q: this.state.word })
-      } else {
-        this.setState({ isSearching: false, q: this.state.word })
-        return Alert.alert('Upps :/', 'we sorry, we have errors')
       }
+      this.setState({ isSearching: false })
+    } else {
+      /*
+        make local state q equal to  local state word.
+        local state q will be send to server to get results from that letter or word
+      */
+      this.setState({ isSearching: false, q: this.state.word }) // set new searching and q
+      return Alert.alert('Upps :/', 'we sorry, we have errors') // send alert when server response with a error
     }
   }
   renderItem ({ item }) {
-    if (item.type === 'locations') {
+    if (item.type === 'locations') { // validate if item to render is a location if is a location, render component Location
       return <Location location={item} navigation={this.props.navigation} />
     }
-    return <Product {...item} navigation={this.props.navigation} />
+    return <Product {...item} navigation={this.props.navigation} /> // render component Product
   }
+
   applyFilters () {
-    let { filters, data } = this.state
+    let { filters, data } = this.state // get  current filters, and data from local state
+    // apply filters to and saved results in local state, this results will be rendered in screen
     this.setState({
       results: data.filter(item => {
         if (filters.products && filters.locations) return item

@@ -25,17 +25,26 @@ class LoginScreen extends Component {
     this.signIn = this.signIn.bind(this)
   }
 
+  /**
+    * initialize method signIn
+    * this method allow start a session
+    * this method get a token and save in phone through AsyncStorage
+ */
+
   async signIn () {
-    let { email, password } = this.state
-    if (email && password) {
-      let data = await Api.signIn({ email, password })
-      if (!data.error) {
+    let { email, password } = this.state // get user information from local state
+    if (email && password) { // validate if exits email and password
+      let data = await Api.signIn({ email, password }) // send request to sever
+      if (!data.error) { // validate if server response with a error
+        // set userProfile in redux store
         this.props.setUserProfile({ ...data.data.data.attributes, ...data.data.data.subscriber_data })
-        this.props.setUserToken(data.data.meta.authentication_token)
+        this.props.setUserToken(data.data.meta.authentication_token) // set auth token in redux store
+        // get list of products, this is for refresh list of products with favorites
         this.props.getProducts({ page: 1 })
-        this.props.getShoppingCar()
-        return this.props.navigation.goBack()
+        this.props.getShoppingCar() // get shopping cart for current user
+        return this.props.navigation.goBack() // send user to previous screen
       }
+      // send information error sended from server
       return Alert.alert(
         'Error !',
         data.data.errors[0].detail || data.data.errors[0].details

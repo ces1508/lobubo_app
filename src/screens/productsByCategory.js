@@ -11,12 +11,16 @@ class ProductsByCategory extends Component {
     this.state = { data: [], isLoading: true }
     this.getProducts = this.getProducts.bind(this)
   }
+  //  initialized  method get Products
   async getProducts () {
-    let { routeName } = this.props.navigation.state
-    let { id } = this.props.navigation.getParam('category')
+    let { routeName } = this.props.navigation.state // get route name from navigation
+    let { id } = this.props.navigation.getParam('category') // get id from param sended in previous screen
+    // validate current tab (product or service)
     let products = await Api.getProductsByCategory(id, { page: 1 }, routeName === 'productsByCategory' ? 'products' : 'services')
     this.setState({ data: products.data.data, isLoading: false })
   }
+
+  // get products when screens is mounted
   componentDidMount () {
     this.getProducts()
   }
