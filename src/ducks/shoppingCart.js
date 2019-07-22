@@ -62,7 +62,7 @@ export const addProductToCart = (product, type = 'refresh') => {
 export const removeProductToCart = (id, type = 'single') => {
   return async dispatch => {
     dispatch({ type: SET_ADDING_TO_SHOPPING_CART, flag: false })
-    let remove = await Api.removeProduct(id)
+    let remove = await Api.removeProduct(id, type)
     if (!remove.error) {
       dispatch(getShoppingCar())
     }

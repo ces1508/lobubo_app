@@ -35,7 +35,7 @@ class ShoppingCartScreen extends PureComponent {
       <View style={{ flex: 1 }}>
         <ShoppingCartList
           showsVerticalScrollIndicator={false}
-          style={{ marginHorizontal: 10 }}
+          style={{ marginHorizontal: 10, marginTop: 10 }}
           data={this.props.data}
           renderItem={item => <ShoppingCartItem item={item.item} index={item.index} />}
         />

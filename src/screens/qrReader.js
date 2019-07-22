@@ -74,7 +74,7 @@ class QrReaderScreen extends Component {
         return this.setState({ alert: { type: 'error', title: 'Lo sentimos, estamos presentando problemas, intenta mas tarde :/' } })
       }
     }
-    if (this.props.token) return this.addToShoppingCart(data, product) // validate if exits token, to add to shopping cart
+    if (this.props.token) return this.addToShoppingCart(data, product.data.data) // validate if exits token, to add to shopping cart
     return this.sendAlert('warning', 'Para Agregar Al carrito primero debes inicar sesion')
   }
   /**
@@ -124,6 +124,7 @@ class QrReaderScreen extends Component {
     if (isFocused) {
       return (
         <RNCamera
+          autoFocus
           onBarCodeRead={this._handleReader}
           ref={ref => {
             this.camera = ref

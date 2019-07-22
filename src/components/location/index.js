@@ -15,8 +15,10 @@ const LocationItem = props => {
       <Image
         style={styles.image}
         source={{ uri: props.location.attributes['brand-logo'].original.url }} />
-      <Text>{props.location.attributes.name}</Text>
-      <Text numberOfLines={3}>{props.location.attributes.description}</Text>
+      <View style={styles.description}>
+        <Text>{props.location.attributes.name}</Text>
+        <Text numberOfLines={3}>{props.location.attributes.description}</Text>
+      </View>
     </View>
   )
 }
@@ -31,6 +33,9 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     paddingBottom: 10,
     overflow: 'hidden'
+  },
+  description: {
+    padding: 10
   },
   image: {
     height: 180

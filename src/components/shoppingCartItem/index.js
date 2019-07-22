@@ -3,13 +3,15 @@ import {
   View,
   Text,
   Image,
-  StyleSheet
+  StyleSheet,
+  Alert
 } from 'react-native'
 import Theme from '../../Theme'
 import Price from '../price'
 import Numeric from 'react-native-numeric-input'
 import { connect } from 'react-redux'
 import { addProductToCart, removeProductToCart } from '../../ducks/shoppingCart'
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
 const mapStateToProps = state => ({ adding: state.shoppingCart.adding })
 const mapDispatchToProps = { addProductToCart, removeProductToCart }
@@ -33,6 +35,17 @@ class ShoppingCarItem extends PureComponent {
       this.props.removeProductToCart(orderItemId)
     }
   }
+
+  handleRemoveProduct (item) {
+    Alert.alert(
+      `vas a eliminar ${item.attributes.product.name}`,
+      'estas seguro, esta opción removera todas las cantidades registradas en el carro de compras',
+      [
+        { text: 'cancel', onPress: () => null },
+        { text: 'yes', onPress: () => this.props.removeProductToCart(item.id, 'all') }
+      ]
+    )
+  }
   renderOptions = () => {
     let { item } = this.props
     return (
@@ -45,6 +58,21 @@ class ShoppingCarItem extends PureComponent {
         {item.attributes.size ? <Text>Tamaño: {item.attributes.size} </Text> : null}
         {item.attributes.talla ? <Text>Talla: {item.attributes.talla} </Text> : null}
         {item.attributes.material ? <Text>Material: {item.attributes.material} </Text> : null}
+      </View>
+    )
+  }
+  renderRowPrice () {
+    let { item } = this.props
+    return (
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+        <Numeric
+          validateOnBlur
+          editable={false}
+          initValue={item.attributes.quantity}
+          onChange={this._handleChange}
+          totalHeight={35}
+          limit={item.attributes.product.quantity} />
+        <Icon onPress={() => this.handleRemoveProduct(item)} name='trash-can-outline' size={30} color='red' style={{ alignSelf: 'flex-end' }} />
       </View>
     )
   }
@@ -67,13 +95,7 @@ class ShoppingCarItem extends PureComponent {
           {this.renderOptions()}
           { this.props.adding
             ? <Text>... Cargando</Text>
-            : <Numeric
-              validateOnBlur
-              editable={false}
-              initValue={item.attributes.quantity}
-              onChange={this._handleChange}
-              totalHeight={35}
-              limit={item.attributes.product.quantity} />
+            : this.renderRowPrice()
           }
         </View>
       </View>
