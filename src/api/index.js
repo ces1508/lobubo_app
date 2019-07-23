@@ -119,6 +119,9 @@ class Api {
       }
     })
   }
+  getBrand (brandId) {
+    return this.makeRequest(`https://lobubo.com/api/app/brands/${brandId}`)
+  }
   buildData (data) {
     return {
       data: {

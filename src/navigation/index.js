@@ -22,6 +22,7 @@ import ServicesScreen from '../screens/services'
 import SearchScreen from '../screens/search'
 import CategoriesScreen from '../screens/categories'
 import ProductsByCategory from '../screens/productsByCategory'
+import BrandScreen from '../screens/brand'
 import Theme from '../Theme'
 
 // router to handle tabs in favorites
@@ -134,6 +135,9 @@ const stack = createStackNavigator({
         title: category.attributes.name
       }
     }
+  },
+  brand: {
+    screen: BrandScreen
   }
 },
 {

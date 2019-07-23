@@ -60,6 +60,7 @@ class ProductScreen extends PureComponent {
           handleFavorite={this._handleFavorite}
           product={this.product}
           adding={adding}
+          navigation={this.props.navigation}
           handleAddToCart={this.addToCart}
         />
         <View style={[styles.section, { paddingHorizontal: 10 }]}>

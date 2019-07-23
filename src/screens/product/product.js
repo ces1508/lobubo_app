@@ -86,7 +86,11 @@ class Product extends Component {
             <View style={{ flex: 1 }}>
               <Text style={styles.textEmphasis}>{product.attributes.name}</Text>
               <Rating rating={product.attributes['reviews-score']} editable={false} iconHeight={10} iconWidth={10} />
-              <Text>By: {product.attributes.brand.name}</Text>
+              <Text
+                onPress={() => this.props.navigation.navigate('brand', { brand: product.attributes.brand })}
+                style={{ fontSize: 18, textDecorationLine: 'underline', paddingVertical: 10 }}>
+                By: {product.attributes.brand.name}
+              </Text>
               <Price style={[styles.textEmphasis, styles.price]} value={product.attributes.price} />
             </View>
             <Icons
