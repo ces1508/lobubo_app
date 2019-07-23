@@ -57,9 +57,9 @@ export default class SearchScreen extends Component {
   }
   renderItem ({ item }) {
     if (item.type === 'locations') { // validate if item to render is a location if is a location, render component Location
-      return <Location location={item} navigation={this.props.navigation} />
+      return <Location location={item} full={item} navigation={this.props.navigation} />
     }
-    return <Product {...item} navigation={this.props.navigation} /> // render component Product
+    return <Product {...item} full={item} navigation={this.props.navigation} /> // render component Product
   }
 
   applyFilters () {
@@ -101,6 +101,7 @@ export default class SearchScreen extends Component {
         ListHeaderComponent={this.header}
         stickyHeaderIndices={[0]}
         numColumns={2}
+        keyExtractor={item => item.id}
         ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
         columnWrapperStyle={{ justifyContent: 'space-between', paddingHorizontal: 10, marginTop: 5 }}
         data={this.state.results}
