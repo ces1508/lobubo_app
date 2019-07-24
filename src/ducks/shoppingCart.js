@@ -71,7 +71,7 @@ async function addToLocalDatabase (product, dispatch) {
     shoppingCart = []
   }
   let alreadyInCart = shoppingCart.find(item => {
-    return item.id && product.id &&
+    return item.id === product.id &&
       item.attributes.material === product.attributes.material &&
       item.attributes.size === product.attributes.size &&
       item.attributes.color === product.attributes.color &&

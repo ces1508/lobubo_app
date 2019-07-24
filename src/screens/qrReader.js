@@ -45,7 +45,7 @@ class QrReaderScreen extends Component {
   _handleReader (qr) {
     let { scanned } = this.state // validate if already scanned
     if (!scanned) {
-      let data = JSON.parse(qr.data.trim())
+      let data = JSON.parse(qr.data)
       this.setState({ scanned: true }) // set scanned in true, this var allow to know is already exits a request to decode a qr code
       this.getProduct(data) // send qr data to method get Product
     }
@@ -88,9 +88,11 @@ class QrReaderScreen extends Component {
    *
    */
   async addToShoppingCart (data, product) {
+    console.log('data', data)
+    console.log('product', product)
     let productToAdd = { // build right format to send as request
       quantity: data.quantity || 1,
-      product_id: data.id || 17,
+      product_id: product.id,
       material: data.material || null,
       size: data.size || null,
       color: data.color || null,

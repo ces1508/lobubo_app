@@ -50,7 +50,9 @@ const MainTabs = createBottomTabNavigator({
   scanner: {
     screen: QrReaderScreen,
     navigationOptions: {
+      title: '',
       showLabel: false,
+      tabBarLabel: '',
       tabBarIcon: ({ focused, tintColor }) => (<Icons name='qrcode-scan' size={25} color='#fff' style={{ padding: 20, backgroundColor: focused ? tintColor : Theme.colors.primary, borderRadius: 50, zIndex: 20 }} />)
     }
   },
