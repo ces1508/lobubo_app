@@ -43,11 +43,10 @@ class LoginScreen extends Component {
         // get list of products, this is for refresh list of products with favorites
         this.props.getProducts({ page: 1 })
         if (this.props.shoppingCart.length > 0) {
-          let syncLocalCart = await syncShoppingCart()
-          console.log(syncLocalCart)
+          await syncShoppingCart()
         }
         this.props.getShoppingCar() // get shopping cart for current user
-        // return this.props.navigation.goBack() // send user to previous screen
+        return this.props.navigation.goBack() // send user to previous screen
       }
       // send information error sended from server
       return Alert.alert(

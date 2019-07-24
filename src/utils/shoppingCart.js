@@ -18,17 +18,16 @@ export const syncShoppingCart = async () => {
           quantity: item.attributes.quantity
         }
         request.push(Api.addProductToCart(product))
-        localShoppingCart.splice(i, 1)
       }
     }
     if (request.length > 0) {
+      await Promise.all(request)
       try {
-        await Promise.all(request)
-        for (let i = 0; i < request.length; i++) {
-          localShoppingCart.splice(i, 1)
-        }
+        request.forEach(() => localShoppingCart.splice(0, 1))
         await Save('@shoppingCart', JSON.stringify(localShoppingCart))
-        syncShoppingCart()
+        if (localShoppingCart.length > 0) {
+          return syncShoppingCart()
+        }
       } catch (e) {
         return { sync: false, error: e.message }
       }

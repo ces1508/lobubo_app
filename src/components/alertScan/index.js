@@ -5,7 +5,6 @@ import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native'
 import PropTypes from 'prop-types'
 
 const AlertScan = props => {
-  console.log('props alert scan', props)
   return (
     <View style={styles.container}>
       <Text
@@ -14,7 +13,7 @@ const AlertScan = props => {
       </Text>
       {props.type !== 'success' ? <Icons name='emoticon-sad-outline' size={200} /> : <Image resizeMode='contain' style={styles.image} source={{ uri: props.image }} />}
       <View style={styles.actions}>
-        <TouchableOpacity style={styles.action} onPress={() => props.navigation.navigate('home')}>
+        <TouchableOpacity style={styles.action} onPress={() => props.navigation.navigate('products')}>
           <Icons name='home' color='#fff' size={20} />
           <Text style={styles.actionTitle}>Volver al Menu</Text>
         </TouchableOpacity>

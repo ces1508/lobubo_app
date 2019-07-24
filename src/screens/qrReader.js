@@ -88,8 +88,6 @@ class QrReaderScreen extends Component {
    *
    */
   async addToShoppingCart (data, product) {
-    console.log('data', data)
-    console.log('product', product)
     let productToAdd = { // build right format to send as request
       quantity: data.quantity || 1,
       product_id: product.id,
@@ -153,6 +151,7 @@ class QrReaderScreen extends Component {
         <RNCamera
           autoFocus
           onBarCodeRead={this._handleReader}
+          captureAudio={false}
           ref={ref => {
             this.camera = ref
           }}
@@ -168,7 +167,10 @@ class QrReaderScreen extends Component {
             !this.state.scanned
               ? <QrScan />
               : this.state.showAlert
-                ? <AlertScan {...this.state.alert} navigation={this.props.navigation} rightButton={() => this.setState({ scanned: false })} />
+                ? <AlertScan
+                  {...this.state.alert}
+                  navigation={this.props.navigation}
+                  rightButton={() => this.setState({ scanned: false })} />
                 : null
           }
         </RNCamera>
