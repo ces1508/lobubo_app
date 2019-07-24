@@ -1,9 +1,11 @@
 import Api from '../api'
+import { Save, getItem } from '../utils/libs'
 const GET_PRODUCTS_OF_CART = 'GET_PRODUCTS_OF_CART'
 const SET_SHOPPING_CART_LOADER = 'SET_SHOPPING_CART_LOADER'
 const RESET_SHOPPING_CART = '/shopping_cart/reset'
 // const ADD_PRODUCT_TO_SHOPPING_CART = 'shopping_cart/add/product'
 const SET_ADDING_TO_SHOPPING_CART = 'shopping_cart/set/add/loader'
+const SET_ITEMS_IN_SHOPPING_CART = 'shopping_cart_set/items' // this will be use when user doesn't have signing
 
 const initialState = {
   products: [],
@@ -20,18 +22,21 @@ export default function shoppingCarReducer (state = initialState, action) {
         isLoading: false,
         products: action.products
       }
-    case RESET_SHOPPING_CART: {
+    case RESET_SHOPPING_CART:
       return {
         ...state,
         products: []
       }
-    }
-    case SET_ADDING_TO_SHOPPING_CART: {
+    case SET_ADDING_TO_SHOPPING_CART:
       return {
         ...state,
         adding: action.flag
       }
-    }
+    case SET_ITEMS_IN_SHOPPING_CART:
+      return {
+        ...state,
+        products: [...action.items]
+      }
     default:
       return state
   }
@@ -49,25 +54,95 @@ export const getShoppingCar = () => {
     }
   }
 }
-export const addProductToCart = (product, type = 'refresh') => {
+export const addProductToCart = (product, userIsLogin = true) => {
   return async dispatch => {
-    dispatch({ type: SET_ADDING_TO_SHOPPING_CART, flag: true })
-    let add = await Api.addProductToCart(product)
-    if (!add.error) {
-      if (type === 'refresh') dispatch(getShoppingCar())
+    if (userIsLogin) {
+      return addToRemoteServer(product, dispatch)
     }
-    dispatch({ type: SET_ADDING_TO_SHOPPING_CART, flag: false })
+    addToLocalDatabase(product, dispatch)
   }
 }
-export const removeProductToCart = (id, type = 'single') => {
+
+async function addToLocalDatabase (product, dispatch) {
+  let shoppingCart = await getItem('@shoppingCart')
+  if (shoppingCart) {
+    shoppingCart = JSON.parse(shoppingCart)
+  } else {
+    shoppingCart = []
+  }
+  let alreadyInCart = shoppingCart.find(item => {
+    return item.id && product.id &&
+      item.attributes.material === product.attributes.material &&
+      item.attributes.size === product.attributes.size &&
+      item.attributes.color === product.attributes.color &&
+      item.attributes.talla === product.attributes.talla
+  })
+  if (alreadyInCart) {
+    alreadyInCart.attributes.quantity = alreadyInCart.attributes.quantity + product.attributes.quantity
+  } else {
+    shoppingCart.push(product)
+  }
+  await Save('@shoppingCart', JSON.stringify([...shoppingCart]))
+  dispatch(setItemsInShoppingCart(shoppingCart))
+}
+
+/**
+ *
+ * @param {string} id, id of product to remove
+ * @param {boolean} type should be single or all
+ * @param {any} userIsLogin
+ *
+ * when user is singed this method will send a request to remote server,
+ * and quantities are be handle by remote server
+ *
+ * if user is not singed
+ *  if quantity is equal to 1 or type is equal to all
+ *    this method remove item from local array
+ *  else
+ *  only decrease one to quantity
+ *
+ */
+
+export const removeProductToCart = (id, type = 'single', userIsLogin = true) => {
   return async dispatch => {
-    dispatch({ type: SET_ADDING_TO_SHOPPING_CART, flag: false })
-    let remove = await Api.removeProduct(id, type)
-    if (!remove.error) {
-      dispatch(getShoppingCar())
+    if (userIsLogin) {
+      dispatch({ type: SET_ADDING_TO_SHOPPING_CART, flag: false })
+      let remove = await Api.removeProduct(id, type)
+      if (!remove.error) {
+        dispatch(getShoppingCar())
+      }
+      dispatch({ type: SET_ADDING_TO_SHOPPING_CART, flag: false })
+    } else {
+      let products = await getItem('@shoppingCart')
+      products = JSON.parse(products)
+      let product = products.find(item => {
+        return item.id === id
+      })
+      if (product.attributes.quantity === 1 || type !== 'single') {
+        products = removeItemFromLocalStorage(products, id)
+      } else {
+        --product.attributes.quantity
+      }
+      await Save('@shoppingCart', JSON.stringify(products))
+      dispatch(setItemsInShoppingCart(products))
     }
-    dispatch({ type: SET_ADDING_TO_SHOPPING_CART, flag: false })
   }
 }
+
+async function addToRemoteServer (product, dispatch) {
+  let add = await Api.addProductToCart(product)
+  if (!add.error) {
+    dispatch(getShoppingCar())
+  }
+  dispatch({ type: SET_ADDING_TO_SHOPPING_CART, flag: false })
+}
+
+function removeItemFromLocalStorage (items, item) {
+  let index = items.findIndex(i => i.id === item.id)
+  items.splice(index, 1)
+  return items
+}
+
+export const setItemsInShoppingCart = items => ({ type: SET_ITEMS_IN_SHOPPING_CART, items })
 
 export const reset = () => ({ type: RESET_SHOPPING_CART })

@@ -9,8 +9,9 @@ import { getProducts } from '../ducks/products'
 import { getShoppingCar } from '../ducks/shoppingCart'
 import Icons from 'react-native-vector-icons/MaterialCommunityIcons'
 import Theme from '../Theme'
+import { syncShoppingCart } from '../utils/shoppingCart'
 
-const mapStateToProps = state => ({ user: state.user })
+const mapStateToProps = state => ({ user: state.user, shoppingCart: state.shoppingCart.products })
 const mapDispatchToProps = { setUserProfile, setUserToken, getProducts, getShoppingCar }
 
 class LoginScreen extends Component {
@@ -41,8 +42,12 @@ class LoginScreen extends Component {
         this.props.setUserToken(data.data.meta.authentication_token) // set auth token in redux store
         // get list of products, this is for refresh list of products with favorites
         this.props.getProducts({ page: 1 })
+        if (this.props.shoppingCart.length > 0) {
+          let syncLocalCart = await syncShoppingCart()
+          console.log(syncLocalCart)
+        }
         this.props.getShoppingCar() // get shopping cart for current user
-        return this.props.navigation.goBack() // send user to previous screen
+        // return this.props.navigation.goBack() // send user to previous screen
       }
       // send information error sended from server
       return Alert.alert(

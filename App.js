@@ -11,8 +11,8 @@ import Navigation from './src/navigation'
 import { Provider } from 'react-redux'
 import store from './src/store'
 import { setPosition } from './src/ducks/position'
-import { getCurrentPosition, getItem } from './src/utils/libs'
-import { getShoppingCar } from './src/ducks/shoppingCart'
+import { getCurrentPosition, getItem, Save } from './src/utils/libs'
+import { getShoppingCar, setItemsInShoppingCart } from './src/ducks/shoppingCart'
 import { setUserToken } from './src/ducks/user'
 
 export default class App extends Component {
@@ -27,7 +27,6 @@ export default class App extends Component {
     try {
       let position = await getCurrentPosition()
       store.dispatch(setPosition(position))
-      store.dispatch(getShoppingCar())
     } catch (e) {
       console.warn('error getting position ', e.message)
     }
@@ -38,6 +37,17 @@ export default class App extends Component {
     if (token) {
       store.dispatch(setUserToken(token))
     }
+    this.setShoppingCart(token)
+  }
+  async setShoppingCart (token) {
+    if (token) {
+      return store.dispatch(getShoppingCar())
+    }
+    let shoppingCartLocal = await getItem('@shoppingCart')
+    if (shoppingCartLocal) {
+      return store.dispatch(setItemsInShoppingCart(JSON.parse(shoppingCartLocal)))
+    }
+    await Save('@shoppingCart', JSON.stringify([]))
   }
   render () {
     if (this.state.hasPosition) {

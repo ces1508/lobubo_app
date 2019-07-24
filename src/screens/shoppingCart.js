@@ -19,7 +19,7 @@ class ShoppingCartScreen extends PureComponent {
     if (this.props.token) {
       return this.props.getShoppingCar()
     }
-    this.props.navigation.navigate('login')
+    // this.props.navigation.navigate('login')
   }
   calculateTotalPrice () {
     let { data } = this.props

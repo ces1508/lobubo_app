@@ -2,14 +2,14 @@ import React, { Component } from 'react'
 import { StyleSheet } from 'react-native'
 import Api from '../api'
 import { connect } from 'react-redux'
-import { getShoppingCar } from '../ducks/shoppingCart'
+import { getShoppingCar, setItemsInShoppingCart, addProductToCart } from '../ducks/shoppingCart'
 import AlertScan from '../components/alertScan'
 import QrScan from '../components/qrReader'
 import { RNCamera } from 'react-native-camera'
 import { withNavigationFocus } from 'react-navigation'
 
 const mapStateToProps = state => ({ token: state.user.token })
-const mapDispatchToProps = { getShoppingCar }
+const mapDispatchToProps = { getShoppingCar, setItemsInShoppingCart, addProductToCart }
 class QrReaderScreen extends Component {
   constructor (props) {
     super(props)
@@ -27,6 +27,7 @@ class QrReaderScreen extends Component {
     this.getProduct = this.getProduct.bind(this)
     this.addToShoppingCart = this.addToShoppingCart.bind(this)
     this.sendAlert = this.sendAlert.bind(this)
+    this.saveProductInLocal = this.saveProductInLocal.bind(this)
     this.camera = null
   }
 
@@ -74,8 +75,8 @@ class QrReaderScreen extends Component {
         return this.setState({ alert: { type: 'error', title: 'Lo sentimos, estamos presentando problemas, intenta mas tarde :/' } })
       }
     }
-    if (this.props.token) return this.addToShoppingCart(data, product.data.data) // validate if exits token, to add to shopping cart
-    return this.sendAlert('warning', 'Para Agregar Al carrito primero debes inicar sesion')
+    return this.addToShoppingCart(data, product.data.data)
+    // return this.sendAlert('warning', 'Para Agregar Al carrito primero debes inicar sesion')
   }
   /**
    *  initialized method addToShoppingCart
@@ -98,16 +99,40 @@ class QrReaderScreen extends Component {
     if (product.quantity > 1) { // validate if product has stock to before add to shopping cart
       return this.sendAlert('out_stock', 'lo sentimos, ya se nos agotaron :/') // render alert if product doesn't exits
     }
-    let addProduct = await Api.addProductToCart(productToAdd) // send request to API to add product to shopping cart
-    if (!addProduct.error) { // validate if server response with  error
-      this.props.getShoppingCar() // dispatch redux action to get all products in shopping cart
-      return this.sendAlert( // render alert. this alert show product name, product image, and quantity added
-        'success',
-        `se ha agregado ${product.attributes.name} X ${productToAdd.quantity}`,
-        product.attributes['image-data'].original.url
-      )
+    if (this.props.token) { // validate if exits token, to  send request to save item in cloud server
+      let addProduct = await Api.addProductToCart(productToAdd) // send request to API to add product to shopping cart
+      if (!addProduct.error) { // validate if server response with  error
+        this.props.getShoppingCar() // dispatch redux action to get all products in shopping cart
+        return this.sendAlert( // render alert. this alert show product name, product image, and quantity added
+          'success',
+          `se ha agregado ${product.attributes.name} X ${productToAdd.quantity}`,
+          product.attributes['image-data'].original.url
+        )
+      }
+      return this.sendAlert('error', 'Lo sentimos, estamos presentando problemas, intenta mas tarde :/')
     }
-    return this.sendAlert('error', 'Lo sentimos, estamos presentando problemas, intenta mas tarde :/')
+    this.saveProductInLocal(product, productToAdd) // save shoppingCart in local database
+  }
+
+  saveProductInLocal (product, productToAdd) {
+    let formatProduct = {
+      id: product.id,
+      attributes: {
+        ...productToAdd,
+        product: {
+          ...product.attributes,
+          'image_data': {
+            url: product.attributes['image-data'].original.url
+          }
+        }
+      }
+    }
+    this.props.addProductToCart(formatProduct, false)
+    return this.sendAlert( // render alert. this alert show product name, product image, and quantity added
+      'success',
+      `se ha agregado ${product.attributes.name} X ${formatProduct.attributes.quantity}`,
+      product.attributes['image-data'].original.url
+    )
   }
   sendAlert (type, title, image) {
     this.setState({

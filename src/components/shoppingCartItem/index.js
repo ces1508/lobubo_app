@@ -13,12 +13,12 @@ import { connect } from 'react-redux'
 import { addProductToCart, removeProductToCart } from '../../ducks/shoppingCart'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
-const mapStateToProps = state => ({ adding: state.shoppingCart.adding })
+const mapStateToProps = state => ({ adding: state.shoppingCart.adding, token: state.user.token })
 const mapDispatchToProps = { addProductToCart, removeProductToCart }
 
 class ShoppingCarItem extends PureComponent {
   _handleChange = value => {
-    let { item } = this.props
+    let { item, token } = this.props
     if (value > item.attributes.quantity) {
       let product = {
         product_id: item.attributes.product.id,
@@ -29,20 +29,31 @@ class ShoppingCarItem extends PureComponent {
         material: item.attributes.material || null
 
       }
-      this.props.addProductToCart(product)
+      if (token) {
+        this.props.addProductToCart(product)
+      } else {
+        this.props.addProductToCart({
+          ...item,
+          attributes: {
+            ...item.attributes,
+            ...product
+          }
+        }, false)
+      }
     } else {
       let orderItemId = item.id
-      this.props.removeProductToCart(orderItemId)
+      this.props.removeProductToCart(orderItemId, 'single', token)
     }
   }
 
-  handleRemoveProduct (item) {
+  handleRemoveProduct = (item) => {
+    let { token } = this.props
     Alert.alert(
       `vas a eliminar ${item.attributes.product.name}`,
       'estas seguro, esta opción removera todas las cantidades registradas en el carro de compras',
       [
         { text: 'cancel', onPress: () => null },
-        { text: 'yes', onPress: () => this.props.removeProductToCart(item.id, 'all') }
+        { text: 'yes', onPress: () => this.props.removeProductToCart(item.id, 'all', token) }
       ]
     )
   }
