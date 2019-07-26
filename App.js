@@ -49,11 +49,13 @@ export default class App extends Component {
     }
     await Save('@shoppingCart', JSON.stringify([]))
   }
+
   render () {
     if (this.state.hasPosition) {
+      const prefix = /https?:\/\/lobubo\/.com|https?:\/\/www.lobubo.com\/|lobubo.com\/|lobubo:\/\//
       return (
         <Provider store={store}>
-          <Navigation />
+          <Navigation uriPrefix={prefix} />
         </Provider>
       )
     }

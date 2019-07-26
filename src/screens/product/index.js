@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react'
-import { View, Text, ScrollView, FlatList } from 'react-native'
+import { View, Text, ScrollView, FlatList, ActivityIndicator } from 'react-native'
 import Api from '../../api'
 import ProductItem from '../../components/product'
 import { connect } from 'react-redux'
@@ -15,14 +15,38 @@ class ProductScreen extends PureComponent {
     super(props)
     this.addToCart = this.addToCart.bind(this)
     this._handleFavorite = this._handleFavorite.bind(this)
-    this.product = this.props.navigation.getParam('product')
-  }
-  state = {
-    similar: [],
-    adding: false
+    this.state = {
+      similar: [],
+      product: {},
+      adding: false,
+      loading: true,
+      error: false
+    }
   }
   async componentDidMount () {
-    let similar = await Api.getSimilarProducts(this.product.id) // get similar products from server
+    let id = this.props.navigation.getParam('id')
+    if (id) {
+      let product = await Api.getProduct(id)
+      if (product.error) {
+        let typeError = product.data.errors[0].status === 404 ? 'NOT_FOUND' : 'INTERNAL_SERVER_ERROR'
+        return this.setState({
+          error: {
+            type: typeError
+          },
+          loading: false
+        })
+      }
+      this.setState({
+        loading: false,
+        product: product.data.data
+      })
+    } else {
+      this.setState({
+        loading: false,
+        product: this.props.navigation.getParam('product')
+      })
+    }
+    let similar = await Api.getSimilarProducts(this.state.product.id) // get similar products from server
     // save response from server in local state
     this.setState({ similar: similar.data.data })
   }
@@ -52,13 +76,23 @@ class ProductScreen extends PureComponent {
     }
   }
   render () {
-    let { adding } = this.state
+    let { adding, loading, error, product } = this.state
+    if (this.state.loading) return <ActivityIndicator size='large' />
+    if (!loading && error) {
+      return (
+        <View>
+          <Text>
+            {error.type === 'NOT_FOUND' ? 'No hemos podido encontrar el producto' : 'estamos presentando problemas, por favor intenta mas tarde'}
+          </Text>
+        </View>
+      )
+    }
     return (
       <ScrollView showsVerticalScrollIndicator={false} scrollsToTop>
         <Product
           favorites={this.props.favorites}
           handleFavorite={this._handleFavorite}
-          product={this.product}
+          product={product}
           adding={adding}
           navigation={this.props.navigation}
           handleAddToCart={this.addToCart}

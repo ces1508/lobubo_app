@@ -35,6 +35,7 @@ const FavoriteStack = createBottomTabNavigator({
 const MainTabs = createBottomTabNavigator({
   products: {
     screen: HomeScreen,
+    path: 'products',
     navigationOptions: {
       tabBarLabel: 'Productos',
       tabBarIcon: <Icons size={25} name='cube-outline' />
@@ -42,6 +43,7 @@ const MainTabs = createBottomTabNavigator({
   },
   services: {
     screen: ServicesScreen,
+    path: 'services',
     navigationOptions: {
       tabBarLabel: 'Servicios',
       tabBarIcon: <HelmetIcon width={30} height={25} />
@@ -49,6 +51,7 @@ const MainTabs = createBottomTabNavigator({
   },
   scanner: {
     screen: QrReaderScreen,
+    path: 'qr',
     navigationOptions: {
       title: '',
       showLabel: false,
@@ -58,6 +61,7 @@ const MainTabs = createBottomTabNavigator({
   },
   categories: {
     screen: CategoriesScreen,
+    path: 'categories',
     navigationOptions: {
       tabBarLabel: 'Categorias',
       tabBarIcon: <Icons name='format-list-bulleted' size={25} color='#000' />
@@ -65,6 +69,7 @@ const MainTabs = createBottomTabNavigator({
   },
   search: {
     screen: SearchScreen,
+    path: 'filter',
     navigationOptions: {
       headerMode: 'none',
       tabBarLabel: 'Buscar',
@@ -97,8 +102,9 @@ const productsAndServicesByCategory = createMaterialTopTabNavigator({
 
 // stack to wrapper al routes
 const stack = createStackNavigator({
-  home: {
+  tabs: {
     screen: MainTabs,
+    path: '',
     navigationOptions: ({ navigation }) => ({
       title: 'Lobubo',
       headerLeft: <DrawerIcon navigation={navigation} />,
@@ -109,6 +115,7 @@ const stack = createStackNavigator({
   },
   shoppingCart: {
     screen: ShoppingCartScreen,
+    path: 'ecommerce/cart',
     navigationOptions: {
       headerMode: 'float',
       title: 'Carrito de Compras'
@@ -121,34 +128,31 @@ const stack = createStackNavigator({
     }
   },
   login: {
+    path: 'login',
     screen: LoginScreen
   },
+  brand: {
+    screen: BrandScreen
+  },
   product: {
+    path: 'ecommerce/product/:id',
     screen: ProductScreen,
     navigationOptions: {
       // headerStyle: { backgroundColor: 'transparent' }
     }
   },
-  productsByCategory: {
-    screen: productsAndServicesByCategory,
-    navigationOptions: ({ navigation }) => {
-      let category = navigation.getParam('category')
-      return {
-        title: category.attributes.name
-      }
-    }
-  },
-  brand: {
-    screen: BrandScreen
-  }
+  productsAndServicesByCategory
 },
 {
-  initialRouteName: 'home'
+  initialRouteName: 'tabs'
 })
 
 // stack to add drawer to app
 const AppStack = createDrawerNavigator({
-  app: stack
+  app: {
+    screen: stack,
+    path: ''
+  }
 }, {
   drawerPosition: 'left',
   drawerType: 'slide',
