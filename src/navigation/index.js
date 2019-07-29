@@ -139,6 +139,7 @@ const stack = createStackNavigator({
     screen: ProductScreen,
     navigationOptions: {
       // headerStyle: { backgroundColor: 'transparent' }
+      header: null
     }
   },
   productsAndServicesByCategory
