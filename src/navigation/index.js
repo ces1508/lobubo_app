@@ -136,6 +136,7 @@ const stack = createStackNavigator({
     screen: LoginScreen
   },
   brand: {
+    path: 'store/:id',
     screen: BrandScreen,
     navigationOptions: {
       header: null
