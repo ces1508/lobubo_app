@@ -63,6 +63,7 @@ const MainTabs = createBottomTabNavigator({
     screen: CategoriesScreen,
     path: 'categories',
     navigationOptions: {
+      header: null,
       tabBarLabel: 'Categorias',
       tabBarIcon: <Icons name='format-list-bulleted' size={25} color='#000' />
     }
@@ -105,13 +106,16 @@ const stack = createStackNavigator({
   tabs: {
     screen: MainTabs,
     path: '',
-    navigationOptions: ({ navigation }) => ({
-      title: 'Lobubo',
-      headerLeft: <DrawerIcon navigation={navigation} />,
-      headerRight: <ShoppingCartIcon navigation={navigation} />,
-      tabBarLabel: 'productos',
-      tabBarIcon: <Icons size={30} name='cube-outline' color='#000' />
-    })
+    navigationOptions: ({ navigation }) => {
+      if (navigation.state.index === 3) return { header: null }
+      return {
+        title: 'Lobubo',
+        headerLeft: <DrawerIcon navigation={navigation} />,
+        headerRight: <ShoppingCartIcon navigation={navigation} />,
+        tabBarLabel: 'productos',
+        tabBarIcon: <Icons size={30} name='cube-outline' color='#000' />
+      }
+    }
   },
   shoppingCart: {
     screen: ShoppingCartScreen,
@@ -132,7 +136,10 @@ const stack = createStackNavigator({
     screen: LoginScreen
   },
   brand: {
-    screen: BrandScreen
+    screen: BrandScreen,
+    navigationOptions: {
+      header: null
+    }
   },
   product: {
     path: 'ecommerce/product/:id',

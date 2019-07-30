@@ -1,9 +1,12 @@
 import React, { PureComponent } from 'react'
-import { FlatList } from 'react-native'
+import { FlatList, View } from 'react-native'
 import Api from '../api'
 import InputFilter from '../components/inputFilter'
 import CategoryItem from '../components/categoryItem'
 import Empty from '../components/emptyList'
+import ViewWrapper from '../components/ViewWithNavbarAnimated'
+import DrawerIcon from '../components/drawerIcon'
+import ShoppingCartIcon from '../components/shoppingCartIcon'
 
 export default class CategoriesScreen extends PureComponent {
   constructor (props) {
@@ -27,16 +30,23 @@ export default class CategoriesScreen extends PureComponent {
     })
   }
   render () {
+    let { navigation } = this.props
     return (
-      <FlatList
-        data={this.state.data}
-        stickyHeaderIndices={[0]}
-        showsVerticalScrollIndicator={false}
-        ListHeaderComponent={<InputFilter onChangeText={this.handleInput} />}
-        ListEmptyComponent={<Empty isLoading={this.state.isLoading} />}
-        keyExtractor={item => item.id}
-        renderItem={({ item }) => <CategoryItem item={item} navigation={this.props.navigation} />}
-      />
+      <ViewWrapper
+        leftIcon={<View style={{ paddingRight: 15, marginRight: 17 }}><DrawerIcon navigation={navigation} /></View>}
+        title='Lobubo'
+        type='hide'
+        navBarChildren={<InputFilter onChangeText={this.handleInput} />}
+        rightIcon={<ShoppingCartIcon navigation={navigation} />}
+        navigation={this.props.navigation}>
+        <FlatList
+          data={this.state.data}
+          showsVerticalScrollIndicator={false}
+          ListEmptyComponent={<Empty isLoading={this.state.isLoading} />}
+          keyExtractor={item => item.id}
+          renderItem={({ item }) => <CategoryItem item={item} navigation={this.props.navigation} />}
+        />
+      </ViewWrapper>
     )
   }
 }

@@ -87,7 +87,7 @@ class Product extends Component {
               <Text style={styles.textEmphasis}>{product.attributes.name}</Text>
               <Rating rating={product.attributes['reviews-score']} editable={false} iconHeight={10} iconWidth={10} />
               <Text
-                onPress={() => this.props.navigation.navigate('brand', { brand: product.attributes.brand })}
+                onPress={() => this.props.navigation.navigate('brand', { id: product.attributes.brand.id })}
                 style={{ fontSize: 18, textDecorationLine: 'underline', paddingVertical: 10 }}>
                 By: {product.attributes.brand.name}
               </Text>

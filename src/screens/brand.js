@@ -4,10 +4,13 @@ import {
   Text,
   Image,
   StyleSheet,
-  ActivityIndicator
+  ActivityIndicator,
+  FlatList
 } from 'react-native'
 import Api from '../api'
 import Rating from 'react-native-easy-rating'
+import ViewAnimatedWrapper from '../components/ViewWithNavbarAnimated'
+import ProductItem from '../components/product'
 
 export default class BrandScreen extends Component {
   constructor (props) {
@@ -17,9 +20,10 @@ export default class BrandScreen extends Component {
       error: false,
       brand: {}
     }
+    this.buildItem = this.buildItem.bind(this)
   }
   async componentDidMount () {
-    let { id } = this.props.navigation.getParam('brand')
+    let id = this.props.navigation.getParam('id')
     let brand = await Api.getBrand(id)
     if (!brand.error) {
       return this.setState({
@@ -30,21 +34,55 @@ export default class BrandScreen extends Component {
     }
     this.setState({ isFetching: false, error: true })
   }
+  buildItem ({ item }) {
+    item = {
+      id: item.id,
+      attributes: {
+        ...item,
+        brand: {
+          ...this.state.brand.attributes
+        },
+        'image-data': {
+          original: { url: item['image_data'].url },
+          ...item['image_data']
+        }
+      }
+    }
+    console.log(item)
+    return <ProductItem
+      {...item}
+      cardType='similar'
+      full={item}
+      showFavoriteIcon={false}
+      navigation={this.props.navigation} />
+  }
   render () {
     let { attributes } = this.state.brand
     if (this.state.isFetching) return <ActivityIndicator size='large' />
     if (this.state.error) return null
     return (
-      <View>
+      <ViewAnimatedWrapper navigation={this.props.navigation}>
         <Image
           style={styles.image}
           source={{ uri: attributes.logo.original.url }}
         />
-        <Text style={styles.name}>{attributes.name}</Text>
-        <Text style={styles.slogan}>{attributes.slogan}</Text>
-        <Rating rating={attributes['reviews-score']} editable={false} iconHeight={20} iconWidth={20} />
-        <Text>{attributes.description}</Text>
-      </View>
+        <View style={{ paddingHorizontal: 10 }}>
+          <Text style={styles.name}>{attributes.name}</Text>
+          <Text style={styles.slogan}>{attributes.slogan}</Text>
+          <Rating rating={attributes['reviews-score']} editable={false} iconHeight={20} iconWidth={20} />
+          <Text>{attributes.description}</Text>
+        </View>
+        <View style={{ paddingVertical: 10 }}>
+          <Text style={{ fontSize: 20, fontWeight: 'bold', marginLeft: 10 }}>Productos En venta</Text>
+          <FlatList
+            horizontal
+            ItemSeparatorComponent={() => <View width={10} />}
+            style={{ padding: 10 }}
+            data={attributes['on-sale-products']}
+            renderItem={this.buildItem}
+          />
+        </View>
+      </ViewAnimatedWrapper>
     )
   }
 }

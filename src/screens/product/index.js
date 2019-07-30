@@ -1,12 +1,12 @@
 import React, { PureComponent } from 'react'
-import { View, Text, ScrollView, FlatList, ActivityIndicator, Animated } from 'react-native'
+import { View, Text, FlatList, ActivityIndicator } from 'react-native'
 import Api from '../../api'
 import ProductItem from '../../components/product'
 import { connect } from 'react-redux'
 import { makeFavorite, setSingleFavorite } from '../../ducks/favorites'
 import styles from './styles'
 import Product from './product'
-import AnimationBar from '../../components/animationBar'
+import ViewWrapper from '../../components/ViewWithNavbarAnimated'
 
 const mapStateToProps = state => ({ token: state.user.token, favorites: state.favorites.currentFavorites })
 const mapDispatchToProps = { makeFavorite, setSingleFavorite }
@@ -24,7 +24,6 @@ class ProductScreen extends PureComponent {
       loading: true,
       error: false
     }
-    this.scrollY = new Animated.Value(0)
   }
   async componentDidMount () {
     let id = this.props.navigation.getParam('id')
@@ -51,7 +50,6 @@ class ProductScreen extends PureComponent {
     }
   }
   async getSimilar () {
-    console.log('get similars')
     let similar = await Api.getSimilarProducts(this.state.product.id) // get similar products from server
     // save response from server in local state
     this.setState({ similar: similar.data.data })
@@ -94,42 +92,28 @@ class ProductScreen extends PureComponent {
       )
     }
     return (
-      <View>
-        <AnimationBar
+      <ViewWrapper
+        navigation={this.props.navigation}>
+        <Product
+          favorites={this.props.favorites}
+          handleFavorite={this._handleFavorite}
+          product={product}
+          adding={adding}
           navigation={this.props.navigation}
-          position={this.scrollY} />
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          onScroll={Animated.event(
-            [{ nativeEvent: {
-              contentOffset: {
-                y: this.scrollY
-              }
-            } }]
-          )}
-          scrollsToTop
-          contentContainerStyle={{ position: 'relative' }}>
-          <Product
-            favorites={this.props.favorites}
-            handleFavorite={this._handleFavorite}
-            product={product}
-            adding={adding}
-            navigation={this.props.navigation}
-            handleAddToCart={this.addToCart}
+          handleAddToCart={this.addToCart}
+        />
+        <View style={[styles.section, { paddingHorizontal: 10 }]}>
+          <Text style={[styles.textEmphasis, { marginBottom: 15 }]}>Quizas te pueda interesar</Text>
+          <FlatList
+            showsHorizontalScrollIndicator={false}
+            horizontal
+            ItemSeparatorComponent={() => <View style={{ width: 20 }} />}
+            data={this.state.similar}
+            keyExtractor={item => item.id}
+            renderItem={({ item }) => <ProductItem {...item} full={item} cardType='similar' navigation={this.props.navigation} />}
           />
-          <View style={[styles.section, { paddingHorizontal: 10 }]}>
-            <Text style={[styles.textEmphasis, { marginBottom: 15 }]}>Quizas te pueda interesar</Text>
-            <FlatList
-              showsHorizontalScrollIndicator={false}
-              horizontal
-              ItemSeparatorComponent={() => <View style={{ width: 20 }} />}
-              data={this.state.similar}
-              keyExtractor={item => item.id}
-              renderItem={({ item }) => <ProductItem {...item} full={item} cardType='similar' navigation={this.props.navigation} />}
-            />
-          </View>
-        </ScrollView>
-      </View>
+        </View>
+      </ViewWrapper>
     )
   }
 }

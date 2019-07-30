@@ -15,6 +15,7 @@ const { width } = Dimensions.get('window')
 
 const Product = props => {
   let isFavorite = props.favorites.get(`${props.type}${props.id}`)
+  console.log(props)
   return (
     <TouchableWithoutFeedback
       style={{ position: 'relative', elevation: 6 }}
@@ -39,10 +40,14 @@ const Product = props => {
               </Text>
               : null
           }
-          <FavoriteIcon
-            onPress={() => props.token ? props.makeFavorite(props, isFavorite) : Alert.alert('ups !', 'primero debes inicar sesion')}
-            isFavorite={isFavorite}
-            style={styles.icon} />
+          {
+            props.showFavoriteIcon
+              ? <FavoriteIcon
+                onPress={() => props.token ? props.makeFavorite(props, isFavorite) : Alert.alert('ups !', 'primero debes inicar sesion')}
+                isFavorite={isFavorite}
+                style={styles.icon} />
+              : null
+          }
         </View>
       </View>
     </TouchableWithoutFeedback>
@@ -53,10 +58,12 @@ export default connect(mapStateToProps, mapDispatchToProps)(Product)
 
 Product.defaultProps = {
   price: 0,
-  cardType: 'normal'
+  cardType: 'normal',
+  showFavoriteIcon: true
 }
 Product.propTypes = {
-  cardType: PropTypes.oneOf(['normal', 'similar'])
+  cardType: PropTypes.oneOf(['normal', 'similar']),
+  showFavoriteIcon: PropTypes.bool.isRequired
 }
 
 const styles = StyleSheet.create({
