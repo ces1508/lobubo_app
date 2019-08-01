@@ -7,6 +7,8 @@ import { makeFavorite, setSingleFavorite } from '../../ducks/favorites'
 import styles from './styles'
 import Product from './product'
 import ViewWrapper from '../../components/ViewWithNavbarAnimated'
+import ShareIcon from '../../components/share'
+import ShoppingCartIcon from '../../components/shoppingCartIcon'
 
 const mapStateToProps = state => ({ token: state.user.token, favorites: state.favorites.currentFavorites })
 const mapDispatchToProps = { makeFavorite, setSingleFavorite }
@@ -91,9 +93,18 @@ class ProductScreen extends PureComponent {
         </View>
       )
     }
+    let optionsToShare = {
+      message: `${this.state.product.attributes.name} $ ${this.state.product.attributes.price}`,
+      title: `${this.state.product.attributes.name} $ ${this.state.product.attributes.price}`,
+      url: `https://lobubo.com/ecommerce/product/${this.state.product.id}`
+    }
     return (
       <ViewWrapper
-        navigation={this.props.navigation}>
+        navigation={this.props.navigation}
+        rightIcon={<View style={{ flexDirection: 'row', marginRight: 5 }}>
+          <ShareIcon options={optionsToShare} />
+          <ShoppingCartIcon navigation={this.props.navigation} />
+        </View>}>
         <Product
           favorites={this.props.favorites}
           handleFavorite={this._handleFavorite}

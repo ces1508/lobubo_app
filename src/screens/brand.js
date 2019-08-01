@@ -11,6 +11,7 @@ import Api from '../api'
 import Rating from 'react-native-easy-rating'
 import ViewAnimatedWrapper from '../components/ViewWithNavbarAnimated'
 import ProductItem from '../components/product'
+import ShareIcon from '../components/share'
 
 export default class BrandScreen extends Component {
   constructor (props) {
@@ -60,8 +61,13 @@ export default class BrandScreen extends Component {
     let { attributes } = this.state.brand
     if (this.state.isFetching) return <ActivityIndicator size='large' />
     if (this.state.error) return null
+    let optionsToShare = {
+      title: attributes.name,
+      message: attributes.slogan,
+      url: `https://lobubo.com/store/${this.state.brand.id}`
+    }
     return (
-      <ViewAnimatedWrapper navigation={this.props.navigation}>
+      <ViewAnimatedWrapper rightIcon={<ShareIcon options={optionsToShare} />} navigation={this.props.navigation}>
         <Image
           style={styles.image}
           source={{ uri: attributes.logo.original.url }}
