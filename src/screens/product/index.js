@@ -58,7 +58,7 @@ class ProductScreen extends PureComponent {
   }
   _handleFavorite () {
     if (!this.props.token) return this.props.navigation.navigate('login')
-    let product = this.product
+    let product = this.state.product
     this.props.makeFavorite(product, this.props.favorites.get(`${product.type}${product.id}`))
   }
 

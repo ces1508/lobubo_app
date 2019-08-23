@@ -1,4 +1,4 @@
-package com.lobubo;
+package com.fusepong.lobubo;
 
 import android.app.Application;
 

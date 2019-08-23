@@ -102,7 +102,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.lobubo"
+        applicationId "com.fusepong.lobubo"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 6

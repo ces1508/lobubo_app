@@ -1,4 +1,4 @@
-package com.lobubo;
+package com.fusepong.lobubo;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
