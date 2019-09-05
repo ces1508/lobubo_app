@@ -1,18 +1,18 @@
 import React from 'react'
 import {
-  TouchableNativeFeedback,
+  TouchableOpacity,
   Image,
   StyleSheet
 } from 'react-native'
 import IconMenu from '../../images/icons/ico_menu.png'
 const DrawerIcon = props => (
-  <TouchableNativeFeedback
-    style={{ backgroundColor: 'red', padding: 10, flex: 1 }}
+  <TouchableOpacity
+    style={{ padding: 10, flex: 1 }}
     onPress={() => props.navigation.openDrawer()}>
     <Image
       source={IconMenu}
       style={styles.drawer} />
-  </TouchableNativeFeedback>
+  </TouchableOpacity>
 )
 
 const styles = StyleSheet.create({

@@ -4,14 +4,19 @@ import Api from '../../api'
 import ProductItem from '../../components/product'
 import { connect } from 'react-redux'
 import { makeFavorite, setSingleFavorite } from '../../ducks/favorites'
+import { addProductToCart } from '../../ducks/shoppingCart'
 import styles from './styles'
 import Product from './product'
 import ViewWrapper from '../../components/ViewWithNavbarAnimated'
 import ShareIcon from '../../components/share'
 import ShoppingCartIcon from '../../components/shoppingCartIcon'
 
-const mapStateToProps = state => ({ token: state.user.token, favorites: state.favorites.currentFavorites })
-const mapDispatchToProps = { makeFavorite, setSingleFavorite }
+const mapStateToProps = state => ({
+  token: state.user.token,
+  favorites: state.favorites.currentFavorites,
+  adding: state.shoppingCart.adding
+})
+const mapDispatchToProps = { makeFavorite, setSingleFavorite, addProductToCart }
 
 class ProductScreen extends PureComponent {
   constructor (props) {
@@ -69,26 +74,20 @@ class ProductScreen extends PureComponent {
   */
 
   async addToCart (product) {
-    if (!this.props.token) return this.props.navigation.navigate('login') // validate if user is logged
-    let { adding } = this.state // get adding to local state
+    // if (!this.props.token) return this.props.navigation.navigate('login') // validate if user is logged
+    let { adding } = this.props // get adding to local state
     if (!adding) { // validate if already exists a request to add
-      // set state adding in true, to can't allow user send another request until server response
-      this.setState({ adding: true })
-      let add = await Api.addProductToCart(product) // send ajax request to server
-      if (add.error) { // validate if server responses with a error
-        return this.setState({ addError: true, message: add.error.message, adding: false })
-      }
-      this.setState({ adding: false }) // set adding in false to allow user send another request to add
+      this.props.addProductToCart(product, this.props.token)
     }
   }
   render () {
-    let { adding, loading, error, product } = this.state
+    let { loading, error, product } = this.state
     if (this.state.loading) return <ActivityIndicator size='large' />
     if (!loading && error) {
       return (
         <View>
           <Text>
-            {error.type === 'NOT_FOUND' ? 'No hemos podido encontrar el producto' : 'estamos presentando problemas, por favor intenta mas tarde'}
+            {error.type === 'NOT_FOUND' ? 'No hemos encontrado el producto' : 'estamos presentando problemas, por favor intenta mas tarde'}
           </Text>
         </View>
       )
@@ -109,7 +108,7 @@ class ProductScreen extends PureComponent {
           favorites={this.props.favorites}
           handleFavorite={this._handleFavorite}
           product={product}
-          adding={adding}
+          adding={this.props.adding}
           navigation={this.props.navigation}
           handleAddToCart={this.addToCart}
         />

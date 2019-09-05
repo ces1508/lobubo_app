@@ -13,6 +13,7 @@ const mapDispatchToProps = { logout }
 class SideMenu extends PureComponent {
   handleLogout () {
     this.props.logout()
+    this.props.navigation.closeDrawer()
   }
   _handleClick (route = '') {
     let { navigation } = this.props

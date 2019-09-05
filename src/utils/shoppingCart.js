@@ -10,7 +10,7 @@ export const syncShoppingCart = async () => {
       let item = localShoppingCart[i]
       if (item) {
         let product = {
-          product_id: item.id,
+          product_id: item.product_id,
           talla: item.attributes.talla,
           color: item.attributes.color,
           size: item.attributes.size,

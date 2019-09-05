@@ -2,7 +2,8 @@ import React, { PureComponent } from 'react'
 import {
   View,
   Text,
-  StyleSheet
+  StyleSheet,
+  Alert
 } from 'react-native'
 import { connect } from 'react-redux'
 import { getShoppingCar, addProductToCart } from '../ducks/shoppingCart'
@@ -37,9 +38,18 @@ class ShoppingCartScreen extends PureComponent {
           showsVerticalScrollIndicator={false}
           style={{ marginHorizontal: 10, marginTop: 10 }}
           data={this.props.data}
+          key_extractor={item => item.product_id}
           renderItem={item => <ShoppingCartItem item={item.item} index={item.index} />}
         />
-        <Text onPress={() => null} style={styles.btnPay}>PAGAR <Price value={total} /></Text>
+        <Text
+          onPress={() => Alert.alert(
+            'Lo Sentimos',
+            'en este momento no podemos procesar tu pago, por favor intenta mas tarde'
+          )}
+          style={styles.btnPay}>
+          PAGAR
+          <Price value={total} />
+        </Text>
       </View>
     )
   }

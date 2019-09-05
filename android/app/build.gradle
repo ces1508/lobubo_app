@@ -105,7 +105,7 @@ android {
         applicationId "com.fusepong.lobubo"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 6
+        versionCode 7
         versionName "1.1.5"
         missingDimensionStrategy 'react-native-camera', 'general'
     }

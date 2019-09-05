@@ -71,14 +71,14 @@ async function addToLocalDatabase (product, dispatch) {
     shoppingCart = []
   }
   let alreadyInCart = shoppingCart.find(item => {
-    return item.id === product.id &&
+    return item.product_id === product.product_id &&
       item.attributes.material === product.attributes.material &&
       item.attributes.size === product.attributes.size &&
       item.attributes.color === product.attributes.color &&
       item.attributes.talla === product.attributes.talla
   })
   if (alreadyInCart) {
-    alreadyInCart.attributes.quantity = alreadyInCart.attributes.quantity + product.attributes.quantity
+    alreadyInCart.attributes.quantity += product.attributes.quantity
   } else {
     shoppingCart.push(product)
   }
@@ -130,6 +130,7 @@ export const removeProductToCart = (id, type = 'single', userIsLogin = true) => 
 }
 
 async function addToRemoteServer (product, dispatch) {
+  dispatch({ type: SET_ADDING_TO_SHOPPING_CART, flag: true })
   let add = await Api.addProductToCart(product)
   if (!add.error) {
     dispatch(getShoppingCar())

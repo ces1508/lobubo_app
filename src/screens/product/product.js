@@ -8,6 +8,19 @@ import Rating from 'react-native-easy-rating'
 import Numeric from 'react-native-numeric-input'
 import Button from '../../components/button'
 import ProductOption from './options'
+import { addProductToCart } from '../../ducks/shoppingCart'
+import { connect } from 'react-redux'
+
+// this inject redux state to local props
+const mapStateToProps = state => ({
+  token: state.user.token,
+  adding: state.shoppingCart.adding
+})
+// inject redux action to to props
+const mapDispatchToProps = {
+  addProductToCart
+}
+
 // this component will be rendered in productScreen
 
 class Product extends Component {
@@ -29,16 +42,37 @@ class Product extends Component {
     })
   }
   _handleAddToCart = () => {
-    let { product } = this.props
-    let productToAdd = {
-      product_id: product.id,
-      quantity: this.state.quantity,
-      color: this.state.colorSelected.name || null,
-      material: this.state.materialSelected.material || null,
-      size: this.state.sizeSelected.size || null,
-      talla: this.state.tallaSelected.talla || null
+    let { product, token } = this.props
+    let productToAdd = {}
+    console.log('token', token)
+    if (token) {
+      productToAdd = {
+        product_id: product.id,
+        quantity: this.state.quantity,
+        price: this.props.product.price,
+        color: this.state.colorSelected.name || null,
+        material: this.state.materialSelected.material || null,
+        size: this.state.sizeSelected.size || null,
+        talla: this.state.tallaSelected.talla || null
+      }
+    } else {
+      productToAdd = {
+        product_id: product.id,
+        attributes: {
+          product: {
+            name: product.attributes.name,
+            price: product.attributes.price,
+            image_data: { url: product.attributes['image-data'].original.url }
+          },
+          quantity: this.state.quantity,
+          color: this.state.colorSelected.name || null,
+          material: this.state.materialSelected.material || null,
+          size: this.state.sizeSelected.size || null,
+          talla: this.state.tallaSelected.talla || null
+        }
+      }
     }
-    this.props.handleAddToCart(productToAdd)
+    this.props.addProductToCart(productToAdd, token)
   }
   renderProductOptions () {
     let { attributes } = this.props.product
@@ -120,7 +154,7 @@ class Product extends Component {
   }
 }
 
-export default Product
+export default connect(mapStateToProps, mapDispatchToProps)(Product)
 
 Product.defaultProps = {
   product: { attributes: {} }
